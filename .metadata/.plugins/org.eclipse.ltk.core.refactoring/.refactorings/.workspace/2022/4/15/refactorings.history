@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;PM L13 Interfaces IV&apos; to &apos;L13 Interfaces IV&apos;" description="Rename resource &apos;PM L13 Interfaces IV&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/PM L13 Interfaces IV" name="L13 Interfaces IV" stamp="1649279827758" updateReferences="true"/>
+</session>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;cseProject.Project2&apos; to &apos;FinalProject118&apos;&#x0D;&#x0A;- Original project: &apos;CSE118&apos;&#x0D;&#x0A;- Original element: &apos;cseProject.Project2&apos;&#x0D;&#x0A;- Renamed element: &apos;cseProject.FinalProject118&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;Project2&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;cseProject{Project2.java[Project2" matchStrategy="1" name="FinalProject118" qualified="false" references="true" similarDeclarations="false" stamp="1651336492533" textual="false" version="1.0"/>
+</session>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;IncorrectGpaException.java&apos; to &apos;DeNobrega Final Exam/src/p1&apos;&#x0D;&#x0A;- Original project: &apos;HW08&apos;&#x0D;&#x0A;- Destination element: &apos;DeNobrega Final Exam/src/p1&apos;&#x0D;&#x0A;- Original element: &apos;p7.IncorrectGpaException.java&apos;" description="Copy compilation unit" destination="=DeNobrega Final Exam/src&lt;p1" element1="/src&lt;p7{IncorrectGpaException.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1650918280935" units="1" version="1.0"/>
+</session>

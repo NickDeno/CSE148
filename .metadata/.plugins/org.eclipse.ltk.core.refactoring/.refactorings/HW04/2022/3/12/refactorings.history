@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Student.java&apos; to &apos;L10 Interfaces III/src/p2_contract&apos;&#x0D;&#x0A;- Original project: &apos;HW04&apos;&#x0D;&#x0A;- Destination element: &apos;L10 Interfaces III/src/p2_contract&apos;&#x0D;&#x0A;- Original element: &apos;p1.Student.java&apos;" description="Copy compilation unit" destination="=L10 Interfaces III/src&lt;p2_contract" element1="/src&lt;p1{Student.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1647293250170" units="1" version="1.0"/>
+</session>

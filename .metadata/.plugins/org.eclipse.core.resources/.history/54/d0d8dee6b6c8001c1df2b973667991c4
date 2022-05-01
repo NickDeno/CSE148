@@ -1,0 +1,22 @@
+package app;
+
+import view.ProgramView;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
+public class AppDemo extends Application {
+	
+	public static void main(String[] args) {
+		Application.launch(args);
+	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		ProgramView programView = new ProgramView();
+		Scene scene = new Scene(programView.getRoot(), 1000, 700);
+		primaryStage.setScene(scene);
+		primaryStage.setTitle("DeNobrega Final Project");
+		primaryStage.show();	
+	}
+}

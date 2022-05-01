@@ -1,0 +1,296 @@
+package view;
+
+import java.util.Arrays;
+import java.util.function.Predicate;
+
+import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import model.Name;
+import model.Person;
+import model.PersonBag;
+import model.Student;
+import util.Backup;
+
+public class StudentView {
+	private PersonBag studentBag;
+	private VBox studentPane;
+	
+	public StudentView(PersonBag studentBag) {
+		this.studentBag = studentBag;
+		
+		TextField firstNameField = new TextField();
+		firstNameField.setPrefSize(100, 30);
+		firstNameField.setPromptText("FIRST NAME");
+		
+		TextField lastNameField = new TextField();
+		lastNameField.setPrefSize(100, 30);
+		lastNameField.setPromptText("LAST NAME");
+		
+		TextField gpaField = new TextField();
+		gpaField.setPrefSize(100, 30);
+		gpaField.setPromptText("GPA");
+		
+		TextField majorField = new TextField();
+		majorField.setPrefSize(100, 30);
+		majorField.setPromptText("MAJOR");
+		
+		TextField idField = new TextField();
+		idField.setPrefSize(100, 30);
+		idField.setPromptText("ID");
+
+		Button searchBtn = new Button("SEARCH");
+		searchBtn.setPrefSize(80, 30);
+		
+		Button removeBtn = new Button("REMOVE");
+		removeBtn.setPrefSize(80, 30);
+		
+		Button insertBtn = new Button("INSERT");
+		insertBtn.setPrefSize(80, 30);
+		
+		Button updateBtn = new Button("UPDATE");
+		updateBtn.setPrefSize(80, 30);
+		
+		Button exitBtn = new Button("EXIT");
+		exitBtn.setPrefSize(80, 30);
+		
+		TextArea outputArea = new TextArea();
+		outputArea.setPromptText("OUTPUT");
+		outputArea.setMaxSize(400, 100);
+		
+		
+		HBox inputBox = new HBox(20);
+		inputBox.setAlignment(Pos.CENTER);
+		inputBox.getChildren().addAll(firstNameField, lastNameField, gpaField, majorField, idField);
+		
+		HBox btnBox = new HBox(20);
+		btnBox.setAlignment(Pos.CENTER);
+		btnBox.getChildren().addAll( searchBtn, removeBtn, insertBtn, updateBtn, exitBtn);
+		
+		ChoiceBox<String> choiceBox = new ChoiceBox<>();
+		choiceBox.getItems().addAll("Search/Remove Parameter", "ID", "FIRST NAME" , "LAST NAME", "GPA", "MAJOR");
+		choiceBox.setValue("Search/Remove Parameter:");
+		
+		VBox outputBox = new VBox(30);
+		outputBox.setAlignment(Pos.CENTER);
+		outputBox.getChildren().addAll(outputArea);
+		
+		searchBtn.setOnAction(e -> {
+			Person[] predicateSearch = studentBag.search(s -> {
+				if(s instanceof Student) {
+					if(choiceBox.getValue().equals("ID")) {
+						outputArea.appendText("Student found with Id" + idField.getText() + ":" + "\n");
+						return s.getId().equals(idField.getText());
+					}
+					
+					if(choiceBox.getValue().equals("FIRST NAME")) {
+						outputArea.appendText("Student found with first name" + firstNameField.getText() + ":" + "\n");
+						return s.getName().getFirstName().equals(firstNameField.getText());
+					}
+					
+					if(choiceBox.getValue().equals("LAST NAME")) {
+						outputArea.appendText("Student found with last name" + lastNameField.getText() + ":" + "\n");
+						return s.getName().getLastName().equals(lastNameField.getText());
+					}
+					
+					if(choiceBox.getValue().equals("MAJOR")) {
+						outputArea.appendText("Student found with major" + majorField.getText() + ":" + "\n");
+						return ((Student) s).getMajor().equalsIgnoreCase(majorField.getText());
+					}
+					
+					if(choiceBox.getValue().equals("GPA")) {
+						outputArea.appendText("Student found with gpa" + idField.getText() + ":" + "\n");
+						return ((Student) s).getGpa() == Double.parseDouble(gpaField.getText());
+					}	
+				}
+				return false;
+			});
+			
+			for(int i = 0; i < predicateSearch.length; i++) {
+				outputArea.appendText(predicateSearch[i].toString() + "\n");
+			}
+		});
+		
+		insertBtn.setOnAction(e -> {
+			String firstName = firstNameField.getText();
+			String lastName = lastNameField.getText();
+			double gpa = Double.parseDouble(gpaField.getText());
+			String major = majorField.getText();
+			
+			Student s = new Student(new Name(firstName, lastName), gpa, major);
+			studentBag.insert(s);
+			studentBag.display();
+			outputArea.appendText("Student added to personBag: " + s.toString() + "\n");
+			
+			firstNameField.clear();
+			lastNameField.clear();
+			gpaField.clear();
+			majorField.clear();
+			
+			Backup.backupPersonBag(studentBag);
+		});
+		
+		exitBtn.setOnAction(e -> {
+			Backup.backupPersonBag(studentBag);
+			Platform.exit();
+		});
+		
+		studentPane = new VBox(40);
+		studentPane.setAlignment(Pos.CENTER);
+		studentPane.getChildren().addAll(inputBox,btnBox, choiceBox, outputBox);
+	}
+	
+	
+
+
+	public VBox getStudentPane() {
+		return studentPane;
+	}
+	
+//	searchBtn.setOnAction(e -> {
+//		if(choiceBox.getValue().equals("ID")) {
+//			Person[] predicateSearch = studentBag.search(s -> {
+//				if(s instanceof Student) {
+//					return s.getId().equals(idField.getText());
+//				}
+//				return false;
+//			});
+//			outputArea.appendText("Student found with id " + idField.getText() + ": " + Arrays.toString(predicateSearch) + "\n");
+//			idField.clear();
+//		}
+//		
+//		if(choiceBox.getValue().equals("FIRST NAME")) {
+//			Person[] predicateSearch = studentBag.search(s -> {
+//				if(s instanceof Student) {
+//					return s.getName().getFirstName().equals(firstNameField.getText());
+//				}
+//				return false;
+//			});
+//			for(int i = 0; i < predicateSearch.length; i++) {
+//				outputArea.appendText("Students found with first name " + firstNameField.getText() + ": " + predicateSearch[i] + "\n");
+//			}
+//			firstNameField.clear();
+//		}
+//		
+//		if(choiceBox.getValue().equals("LAST NAME")) {
+//			Person[] predicateSearch = studentBag.search(s -> {
+//				if(s instanceof Student) {
+//					return s.getName().getLastName().equals(lastNameField.getText());
+//				}
+//				return false;
+//			});
+//			for(int i = 0; i < predicateSearch.length; i++) {
+//				outputArea.appendText("Students found with last name " + lastNameField.getText() + ": " + predicateSearch[i] + "\n");
+//			}
+//			lastNameField.clear();
+//		}
+//		
+//		if(choiceBox.getValue().equals("MAJOR")) {
+//			Person[] predicateSearch = studentBag.search(s -> {
+//				if(s instanceof Student) {
+//					return ((Student) s).getMajor().equalsIgnoreCase(majorField.getText());
+//				}
+//				return false;
+//			});
+//			
+//			for(int i = 0; i < predicateSearch.length; i++) {
+//				outputArea.appendText("Students found with major " + majorField.getText() + ": " + predicateSearch[i] + "\n");
+//			}
+//			majorField.clear();
+//		}
+//		
+//		if(choiceBox.getValue().equals("GPA")) {
+//			Person[] predicateSearch = studentBag.search(s -> {
+//				if(s instanceof Student) {
+//					return ((Student) s).getGpa() == Double.parseDouble(gpaField.getText());
+//				}
+//				return false;
+//			});
+//			
+//			for(int i = 0; i < predicateSearch.length; i++) {
+//				outputArea.appendText("Studentsfound with gpa " + gpaField.getText() + ": " + predicateSearch[i] + "\n");
+//			}	
+//			gpaField.clear();
+//		}
+//		choiceBox.setValue("Search/Remove Parameter:");
+//		
+//	});
+//	
+//	//REMOVE STUDENT OBJECTS FROM PERSONBAG
+//	removeBtn.setOnAction(e -> {
+//		if(choiceBox.getValue().equals("ID")) {
+//			Person[] predicateDelete = studentBag.delete(s -> {
+//				if(s instanceof Student) {
+//					return s.getId().equals(idField.getText());
+//				}
+//				return false;
+//			});
+//			outputArea.appendText("Person removed with id " + idField.getText() + ": " + Arrays.toString(predicateDelete) + "\n");
+//			idField.clear();
+//			
+//		}
+//		
+//		if(choiceBox.getValue().equals("FIRST NAME")) {
+//			Person[] predicateDelete = studentBag.delete(s -> {
+//				if(s instanceof Student) {
+//					 return s.getName().getFirstName().equals(firstNameField.getText());
+//				}
+//				return false;
+//			});
+//			for(int i = 0; i < predicateDelete.length; i++) {
+//				outputArea.appendText("Person removed with first name " + firstNameField.getText() + ": " + predicateDelete[i] + "\n");
+//			}
+//			firstNameField.clear();
+//		}
+//		
+//		if(choiceBox.getValue().equals("LAST NAME")) {
+//			Person[] predicateDelete = studentBag.delete(s -> {
+//				if(s instanceof Student) {
+//					return s.getName().getLastName().equals(lastNameField.getText());
+//				}
+//				return false;
+//			});
+//			for(int i = 0; i < predicateDelete.length; i++) {
+//				outputArea.appendText("Person removed with last name " + lastNameField.getText() + ": " + predicateDelete[i] + "\n");
+//			}
+//			lastNameField.clear();
+//			
+//		}
+//		
+//		if(choiceBox.getValue().equals("MAJOR")) {
+//			Person[] predicateDelete = studentBag.delete(s -> {
+//				if(s instanceof Student) {
+//					return ((Student) s).getMajor().equalsIgnoreCase(majorField.getText());
+//				}
+//				return false;
+//			});
+//			
+//			for(int i = 0; i < predicateDelete.length; i++) {
+//				outputArea.appendText("Person found with major " + majorField.getText() + ": " + predicateDelete[i] + "\n");
+//			}
+//			majorField.clear();
+//		}
+//		
+//		if(choiceBox.getValue().equals("GPA")) {
+//			Person[] predicateDelete = studentBag.delete(s -> {
+//				if(s instanceof Student) {
+//					return ((Student) s).getGpa() == Double.parseDouble(gpaField.getText());
+//				}
+//				return false;
+//			});
+//			
+//			for(int i = 0; i < predicateDelete.length; i++) {
+//				outputArea.appendText("Person found with gpa " + gpaField.getText() + ": " + predicateDelete[i] + "\n");
+//			}	
+//			gpaField.clear();
+//		}
+//		choiceBox.setValue("Search/Remove Parameter:");
+//		Backup.backupPersonBag(studentBag);
+//	});
+	
+}

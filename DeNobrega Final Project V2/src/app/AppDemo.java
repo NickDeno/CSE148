@@ -19,7 +19,6 @@ public class AppDemo extends Application {
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("DeNobrega Final Project");
 		primaryStage.getIcons().add(new Image("BookIcon.png"));
-		primaryStage.setAlwaysOnTop(true);
 		primaryStage.show();	
 	}
 }

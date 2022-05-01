@@ -8,7 +8,6 @@ import model.PersonBag;
 import model.TextbookBag;
 
 public class Backup {
-	
 	public static void backupPersonBag(PersonBag personBag) {
 		try {
 			FileOutputStream fos = new FileOutputStream("backupFolder/Persons.dat");

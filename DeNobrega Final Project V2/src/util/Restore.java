@@ -9,13 +9,11 @@ import model.PersonBag;
 import model.TextbookBag;
 
 public class Restore {
-	
 	public static PersonBag restorePersonBag() {
 		try {
 			FileInputStream fis = new FileInputStream("backupFolder/Persons.dat");
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			PersonBag personBag = (PersonBag) ois.readObject();
-//			Person.setIdCount((Integer)ois.readObject());
 			Person.setIdCount(personBag.getnElems());
 			ois.close();
 			return personBag;

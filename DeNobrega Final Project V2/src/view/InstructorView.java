@@ -1,15 +1,20 @@
 package view;
 
+import java.util.Optional;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -129,11 +134,7 @@ public class InstructorView {
 				return false;
 			});
 			
-			if(userChoice.equals("ID") && predicateSearch.length > 0) {
-				outputField.appendText("Instructor found with id " + idField.getText() + "!");
-				setTextFields(predicateSearch[0]);
-				
-			} else if(predicateSearch.length > 0) {
+			if(predicateSearch.length > 0) {
 				outputField.appendText("Search results:");
 				ObservableList<Person> results = FXCollections.observableArrayList(predicateSearch);
 				listView.getItems().addAll(results);
@@ -156,38 +157,51 @@ public class InstructorView {
 		
 		removeBtn.setOnAction(e -> {
 			outputField.clear();
-			outputField.appendText("Removed student with id " + idField.getText() + "!");
-			Person[] predicateDelete = instructorBag.delete(i -> i.getId().equals(idField.getText()));		
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setHeaderText(null);
+			alert.setContentText("Are you sure you want to remove instructor with ID " + idField.getText() + "?");
+			Optional<ButtonType> action = alert.showAndWait();
 			
-			listView.getItems().remove(predicateDelete[0]);
-			listView.getSelectionModel().clearSelection();
-			
-			clearTextFields();
-			Backup.backupPersonBag(instructorBag);
+			if(action.get() == ButtonType.OK) {
+				outputField.appendText("Removed instructor with id " + idField.getText() + "!");
+				Person[] predicateDelete = instructorBag.delete(i -> i.getId().equals(idField.getText()));		
+				listView.getItems().remove(predicateDelete[0]);
+				listView.getSelectionModel().clearSelection();
+				clearTextFields();
+				Backup.backupPersonBag(instructorBag);
+			}
 		});
 		
 		insertBtn.setOnAction(e -> {
 			outputField.clear();
 			listView.getItems().clear();
-			Instructor i = new Instructor(new Name(firstNameField.getText(), lastNameField.getText()), rankField.getText(), Double.parseDouble(salaryField.getText()));
-			instructorBag.insert(i);
-			
-			outputField.appendText("Inserted Instructor!");
-			clearTextFields();
-			Backup.backupPersonBag(instructorBag);
+			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
+				Instructor i = new Instructor(new Name(firstNameField.getText(), lastNameField.getText()), rankField.getText(), Double.parseDouble(salaryField.getText()));
+				instructorBag.insert(i);
+				outputField.appendText("Inserted Instructor!");
+				clearTextFields();
+				Backup.backupPersonBag(instructorBag);
+				
+			} else if(!idField.getText().isEmpty()) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setHeaderText(null);
+				alert.setContentText("Cannot insert instructor with ID chosen by user. Clear ID field and try again.");
+				alert.showAndWait();
+			}
 		});
 		
 		updateBtn.setOnAction(e -> {
-			outputField.clear();
+			outputField.clear();	
 			Person[] instructorToUpdate = instructorBag.search(s -> s.getId().equals(idField.getText()));
-			instructorToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
-			((Instructor)instructorToUpdate[0]).setRank(rankField.getText());
-			((Instructor)instructorToUpdate[0]).setSalary(Double.parseDouble(salaryField.getText()));
-			
-			listView.getSelectionModel().clearSelection();
-			outputField.appendText("Instructor with id " + idField.getText() + " was updated!");
-			clearTextFields();
-			Backup.backupPersonBag(instructorBag);
+			if(checkTextFieldsAreValid() == true) {
+				instructorToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
+				((Instructor)instructorToUpdate[0]).setRank(rankField.getText());
+				((Instructor)instructorToUpdate[0]).setSalary(Double.parseDouble(salaryField.getText()));
+				listView.getSelectionModel().clearSelection();
+				outputField.appendText("Instructor with id " + idField.getText() + " was updated!");
+				clearTextFields();
+				Backup.backupPersonBag(instructorBag);
+			}	
 		});
 		
 		instructorPane = new VBox(35);
@@ -225,4 +239,24 @@ public class InstructorView {
 		listView.getItems().clear();
 		
 	}
+	
+	private boolean checkTextFieldsAreValid() {
+		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || rankField.getText().isEmpty() || salaryField.getText().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.showAndWait();
+			return false;
+			
+		} else if(!(rankField.getText().equalsIgnoreCase("Instructor") || rankField.getText().equalsIgnoreCase("Assistant Professor") || 
+				rankField.getText().equalsIgnoreCase("Associate Professor") || rankField.getText().equalsIgnoreCase("Professor"))) {
+			
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Invalid instructor rank. Please Recheck and Try Again");
+			alert.showAndWait();
+			return false;
+		}
+		return true;	
+	}	
 }

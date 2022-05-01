@@ -1,12 +1,17 @@
 package view;
 
+import java.util.Optional;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -98,7 +103,6 @@ public class StudentView {
 		outputBox.setAlignment(Pos.CENTER);
 		outputBox.getChildren().addAll(outputField, listView);
 		
-	
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
@@ -129,11 +133,7 @@ public class StudentView {
 				return false;
 			});
 			
-			if(userChoice.equals("ID") && predicateSearch.length > 0) {
-					outputField.appendText("Student found with id " + idField.getText() + "!");
-					setTextFields(predicateSearch[0]);
-					
-			} else if(predicateSearch.length > 0) {
+			if(predicateSearch.length > 0) {
 				outputField.appendText("Search results:");
 				ObservableList<Person> results = FXCollections.observableArrayList(predicateSearch);
 				listView.getItems().addAll(results);
@@ -159,39 +159,53 @@ public class StudentView {
 		});
 		
 		removeBtn.setOnAction(e -> {
-			outputField.clear();
-			outputField.appendText("Removed student with id " + idField.getText() + "!");
-			Person[] predicateDelete = studentBag.delete(s -> s.getId().equals(idField.getText()));		
+			outputField.clear();	
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setHeaderText(null);
+			alert.setContentText("Are you sure you want to remove student with id " + idField.getText() + "?");
+			Optional<ButtonType> action = alert.showAndWait();
 			
-			listView.getItems().remove(predicateDelete[0]);
-			listView.getSelectionModel().clearSelection();
-			
-			clearTextFields();
-			Backup.backupPersonBag(studentBag);
+			if(action.get() == ButtonType.OK) {
+				outputField.appendText("Removed student with id " + idField.getText() + "!");
+				Person[] predicateDelete = studentBag.delete(s -> s.getId().equals(idField.getText()));		
+				listView.getItems().remove(predicateDelete[0]);
+				listView.getSelectionModel().clearSelection();
+				clearTextFields();
+				Backup.backupPersonBag(studentBag);
+			}	
 		});
 		
 		insertBtn.setOnAction(e -> {
 			outputField.clear();
 			listView.getItems().clear();
-			Student s = new Student(new Name(firstNameField.getText(), lastNameField.getText()),  Double.parseDouble(gpaField.getText()), majorField.getText());
-			studentBag.insert(s);
 			
-			outputField.appendText("Inserted Student!");
-			clearTextFields();
-			Backup.backupPersonBag(studentBag);
+			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
+				Student s = new Student(new Name(firstNameField.getText(), lastNameField.getText()),  Double.parseDouble(gpaField.getText()), majorField.getText());
+				studentBag.insert(s);
+				outputField.appendText("Inserted Student!");
+				clearTextFields();
+				Backup.backupPersonBag(studentBag);
+				
+			} else if(!idField.getText().isEmpty()) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setHeaderText(null);
+				alert.setContentText("Cannot insert student with ID chosen by user. Clear ID field and try again.");
+				alert.showAndWait();
+			}
 		});
 		
 		updateBtn.setOnAction(e -> {
 			outputField.clear();
-			Person[] studentToUpdate = studentBag.search(s -> s.getId().equals(idField.getText()));
-			studentToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
-			((Student)studentToUpdate[0]).setMajor(majorField.getText());
-			((Student)studentToUpdate[0]).setGpa(Double.parseDouble(gpaField.getText()));
-			
-			listView.getSelectionModel().clearSelection();
-			outputField.appendText("Student with id " + idField.getText() + " was updated!");
-			clearTextFields();
-			Backup.backupPersonBag(studentBag);
+			Person[] studentToUpdate = studentBag.search(s -> s.getId().equals(idField.getText()));	
+			if(checkTextFieldsAreValid() == true) {
+				studentToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
+				((Student)studentToUpdate[0]).setMajor(majorField.getText());
+				((Student)studentToUpdate[0]).setGpa(Double.parseDouble(gpaField.getText()));
+				listView.getSelectionModel().clearSelection();
+				outputField.appendText("Student with id " + idField.getText() + " was updated!");
+				clearTextFields();
+				Backup.backupPersonBag(studentBag);
+			}
 		});
 		
 		studentPane = new VBox(35);
@@ -229,4 +243,21 @@ public class StudentView {
 		listView.getItems().clear();
 	}
 	
+	private boolean checkTextFieldsAreValid() {
+		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || gpaField.getText().isEmpty() || majorField.getText().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.showAndWait();
+			return false;
+			
+		} else if(Double.parseDouble(gpaField.getText()) > 4.0 || Double.parseDouble(gpaField.getText()) < 0.0 ) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Invalid Gpa. Please Recheck and Try Again");
+			alert.showAndWait();
+			return false;
+		}
+		return true;	
+	}	
 }

@@ -1,15 +1,20 @@
 package view;
 
+import java.util.Optional;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
@@ -91,13 +96,12 @@ public class TextbookView {
 		btnBox.getChildren().addAll( searchBtn, removeBtn, insertBtn, updateBtn);
 		
 		choiceBox = new ChoiceBox<>();
-		choiceBox.getItems().addAll("TITLE", "ISBN" , "AUTHOR FIRST NAME", "AUTHOR LAST NAME", "PRICE");
+		choiceBox.getItems().addAll("TITLE", "ISBN", "AUTHOR FIRST NAME", "AUTHOR LAST NAME", "PRICE");
 		choiceBox.setValue("Search Parameter:");
 		
 		VBox outputBox = new VBox(30);
 		outputBox.setAlignment(Pos.CENTER);
 		outputBox.getChildren().addAll(outputField, listView);
-		
 		
 		searchBtn.setOnAction(e -> {
 			outputField.clear();
@@ -152,40 +156,52 @@ public class TextbookView {
 		
 		removeBtn.setOnAction(e -> {
 			outputField.clear();
-			outputField.appendText("Removed textbook with isbn " + isbnField.getText() + "!");
-			Textbook[] predicateDelete = textbookBag.delete(t -> t.getIsbn().equals(isbnField.getText()));		
-	
-			listView.getItems().remove(predicateDelete[0]);
-			listView.getSelectionModel().clearSelection();
+			Alert alert = new Alert(AlertType.CONFIRMATION);
+			alert.setHeaderText(null);
+			alert.setContentText("Are you sure you want to remove textbook with ISBN " + isbnField.getText() + "?");
+			Optional<ButtonType> action = alert.showAndWait();
 			
-			clearTextFields();
-			Backup.backupTextbookBag(textbookBag);
+			if(action.get() == ButtonType.OK) {
+				outputField.appendText("Removed textbook with isbn " + isbnField.getText() + "!");
+				Textbook[] predicateDelete = textbookBag.delete(t -> t.getIsbn().equals(isbnField.getText()));		
+				listView.getItems().remove(predicateDelete[0]);
+				listView.getSelectionModel().clearSelection();
+				clearTextFields();
+				Backup.backupTextbookBag(textbookBag);
+			}
 		});
 		
 		insertBtn.setOnAction(e -> {
 			outputField.clear();
 			listView.getItems().clear();
-			Textbook t = new Textbook(titleField.getText(), isbnField.getText(), new Name(authorFirstNameField.getText(), authorLastNameField.getText()), Double.parseDouble(priceField.getText()));
-			textbookBag.insert(t);
-			
-			outputField.appendText("Inserted Textbook");
-			clearTextFields();
-			Backup.backupTextbookBag(textbookBag);
+			if(checkTextFieldsAreValid() == true && isbnField.getText().isEmpty()) {
+				Textbook t = new Textbook(titleField.getText(), isbnField.getText(), new Name(authorFirstNameField.getText(), authorLastNameField.getText()), Double.parseDouble(priceField.getText()));
+				textbookBag.insert(t);
+				outputField.appendText("Inserted Textbook");
+				clearTextFields();
+				Backup.backupTextbookBag(textbookBag);
+				
+			} else if(!isbnField.getText().isEmpty()) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setHeaderText(null);
+				alert.setContentText("Cannot insert textbook with ISBN chosen by user. Clear ISBN field and try again.");
+				alert.showAndWait();
+			}
 		});
 		
 		updateBtn.setOnAction(e -> {
 			outputField.clear();
 			Textbook[] textbookToUpdate = textbookBag.search(t -> t.getIsbn().equals(isbnField.getText()));
-			
-			textbookToUpdate[0].setTitle(titleField.getText());
-			textbookToUpdate[0].setIsbn(isbnField.getText());
-			textbookToUpdate[0].setAuthor(new Name(authorFirstNameField.getText(), authorLastNameField.getText()));
-			textbookToUpdate[0].setPrice(Double.parseDouble(priceField.getText()));
-			
-			listView.getSelectionModel().clearSelection();
-			outputField.appendText("Textbook with isbn " + isbnField.getText() + " was updated!");
-			clearTextFields();
-			Backup.backupTextbookBag(textbookBag);
+			if(checkTextFieldsAreValid() == true) {
+				textbookToUpdate[0].setTitle(titleField.getText());
+				textbookToUpdate[0].setIsbn(isbnField.getText());
+				textbookToUpdate[0].setAuthor(new Name(authorFirstNameField.getText(), authorLastNameField.getText()));
+				textbookToUpdate[0].setPrice(Double.parseDouble(priceField.getText()));
+				listView.getSelectionModel().clearSelection();
+				outputField.appendText("Textbook with isbn " + isbnField.getText() + " was updated!");
+				clearTextFields();
+				Backup.backupTextbookBag(textbookBag);
+			}
 		});
 			
 		textbookPane = new VBox(35);
@@ -202,19 +218,19 @@ public class TextbookView {
 	
 	public void setTextFields(Textbook t) {
 		titleField.setText(t.getTitle());
-		isbnField.setText(t.getIsbn());
 		authorFirstNameField.setText(t.getAuthor().getFirstName());
 		authorLastNameField.setText(t.getAuthor().getLastName());
 		priceField.setText(String.valueOf(t.getPrice()));
+		isbnField.setText(t.getIsbn());
 		
 	}
 	
 	public void clearTextFields() {
 		titleField.clear();
-		isbnField.clear();
 		authorFirstNameField.clear();
 		authorLastNameField.clear();
 		priceField.clear();
+		isbnField.clear();
 	}
 	
 	public void clearAllFields() {
@@ -223,5 +239,16 @@ public class TextbookView {
 		choiceBox.setValue("Search Parameter");
 		listView.getItems().clear();
 			
+	}	
+	
+	private boolean checkTextFieldsAreValid() {
+		if(titleField.getText().isEmpty() || authorFirstNameField.getText().isEmpty() || authorLastNameField.getText().isEmpty() || priceField.getText().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.showAndWait();
+			return false;	
+		} 
+		return true;	
 	}	
 }

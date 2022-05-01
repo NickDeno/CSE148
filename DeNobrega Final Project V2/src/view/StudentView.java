@@ -215,7 +215,7 @@ public class StudentView {
 		studentPane.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1d67a3, #232526 )");
 	}
 	
-	//StudentView Methods
+	//StudentView Methods.
 	public VBox getStudentPane() {
 		return studentPane;
 	}

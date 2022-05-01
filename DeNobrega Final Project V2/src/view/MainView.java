@@ -31,7 +31,7 @@ public class MainView {
 	private InstructorView instructorView;
 	private TextbookView textbookView;
 
-	//Test
+	
 	public MainView() {
 		personBag = new File("backupFolder/Persons.dat").exists() ? Restore.restorePersonBag() : new PersonBag(2000);
 		textbookBag = new File("backupFolder/Textbooks.dat").exists() ? Restore.restoreTextbookBag() : new TextbookBag(39000);

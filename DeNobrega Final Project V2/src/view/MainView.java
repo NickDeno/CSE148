@@ -30,7 +30,6 @@ public class MainView {
 	private StudentView studentView;
 	private InstructorView instructorView;
 	private TextbookView textbookView;
-
 	
 	public MainView() {
 		personBag = new File("backupFolder/Persons.dat").exists() ? Restore.restorePersonBag() : new PersonBag(2000);

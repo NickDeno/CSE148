@@ -216,6 +216,17 @@ public class TextbookView {
 		return textbookPane;
 	}
 	
+	private boolean checkTextFieldsAreValid() {
+		if(titleField.getText().isEmpty() || authorFirstNameField.getText().isEmpty() || authorLastNameField.getText().isEmpty() || priceField.getText().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.showAndWait();
+			return false;	
+		} 
+		return true;	
+	}	
+	
 	public void setTextFields(Textbook t) {
 		titleField.setText(t.getTitle());
 		authorFirstNameField.setText(t.getAuthor().getFirstName());
@@ -239,16 +250,5 @@ public class TextbookView {
 		choiceBox.setValue("Search Parameter");
 		listView.getItems().clear();
 			
-	}	
-	
-	private boolean checkTextFieldsAreValid() {
-		if(titleField.getText().isEmpty() || authorFirstNameField.getText().isEmpty() || authorLastNameField.getText().isEmpty() || priceField.getText().isEmpty()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Please Recheck Text Fields and Try Again.");
-			alert.showAndWait();
-			return false;	
-		} 
-		return true;	
 	}	
 }

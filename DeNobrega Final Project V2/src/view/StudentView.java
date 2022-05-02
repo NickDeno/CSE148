@@ -186,8 +186,7 @@ public class StudentView {
 				studentBag.insert(s);
 				outputField.appendText("Inserted Student!");
 				clearTextFields();
-				Backup.backupPersonBag(studentBag);
-				
+				Backup.backupPersonBag(studentBag);	
 			} else if(!idField.getText().isEmpty()) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setHeaderText(null);
@@ -262,5 +261,4 @@ public class StudentView {
 		choiceBox.setValue("Search Parameter");
 		listView.getItems().clear();
 	}
-	
 }

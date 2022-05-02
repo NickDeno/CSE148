@@ -219,6 +219,26 @@ public class InstructorView {
 		return instructorPane;
 	}
 	
+	private boolean checkTextFieldsAreValid() {
+		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || rankField.getText().isEmpty() || salaryField.getText().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.showAndWait();
+			return false;
+			
+		} else if(!(rankField.getText().equalsIgnoreCase("Instructor") || rankField.getText().equalsIgnoreCase("Assistant Professor") || 
+				rankField.getText().equalsIgnoreCase("Associate Professor") || rankField.getText().equalsIgnoreCase("Professor"))) {
+			
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Invalid instructor rank. Please Recheck and Try Again");
+			alert.showAndWait();
+			return false;
+		}
+		return true;	
+	}	
+	
 	public void setTextFields(Person p) {
 		firstNameField.setText(p.getName().getFirstName());
 		lastNameField.setText(p.getName().getLastName());
@@ -242,24 +262,4 @@ public class InstructorView {
 		listView.getItems().clear();
 		
 	}
-	
-	private boolean checkTextFieldsAreValid() {
-		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || rankField.getText().isEmpty() || salaryField.getText().isEmpty()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Please Recheck Text Fields and Try Again.");
-			alert.showAndWait();
-			return false;
-			
-		} else if(!(rankField.getText().equalsIgnoreCase("Instructor") || rankField.getText().equalsIgnoreCase("Assistant Professor") || 
-				rankField.getText().equalsIgnoreCase("Associate Professor") || rankField.getText().equalsIgnoreCase("Professor"))) {
-			
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Invalid instructor rank. Please Recheck and Try Again");
-			alert.showAndWait();
-			return false;
-		}
-		return true;	
-	}	
 }

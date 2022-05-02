@@ -162,19 +162,21 @@ public class StudentView {
 		
 		removeBtn.setOnAction(e -> {
 			outputField.clear();	
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setHeaderText(null);
-			alert.setContentText("Are you sure you want to remove student with id " + idField.getText() + "?");
-			Optional<ButtonType> action = alert.showAndWait();
-			
-			if(action.get() == ButtonType.OK) {
-				outputField.appendText("Removed student with id " + idField.getText() + "!");
-				Person[] predicateDelete = studentBag.delete(s -> s.getId().equals(idField.getText()));		
-				listView.getItems().remove(predicateDelete[0]);
-				listView.getSelectionModel().clearSelection();
-				clearTextFields();
-				Backup.backupPersonBag(studentBag);
-			}	
+			if(checkTextFieldsAreValid() == true) {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setHeaderText(null);
+				alert.setContentText("Are you sure you want to remove student with id " + idField.getText() + "?");
+				Optional<ButtonType> action = alert.showAndWait();
+				
+				if(action.get() == ButtonType.OK) {
+					outputField.appendText("Removed student with id " + idField.getText() + "!");
+					Person[] predicateDelete = studentBag.delete(s -> s.getId().equals(idField.getText()));		
+					listView.getItems().remove(predicateDelete[0]);
+					listView.getSelectionModel().clearSelection();
+					clearTextFields();
+					Backup.backupPersonBag(studentBag);
+				}	
+			}
 		});
 		
 		insertBtn.setOnAction(e -> {
@@ -190,7 +192,7 @@ public class StudentView {
 			} else if(!idField.getText().isEmpty()) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setHeaderText(null);
-				alert.setContentText("Cannot insert student with ID chosen by user. Clear ID field and try again.");
+				alert.setContentText("Cannot insert student with id chosen by user. Clear id field and try again.");
 				alert.showAndWait();
 			}
 		});
@@ -225,14 +227,14 @@ public class StudentView {
 		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || gpaField.getText().isEmpty() || majorField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText(null);
-			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.setContentText("Please recheck Text Fields and try again.");
 			alert.showAndWait();
 			return false;
 			
 		} else if(Double.parseDouble(gpaField.getText()) > 4.0 || Double.parseDouble(gpaField.getText()) < 0.0 ) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText(null);
-			alert.setContentText("Invalid Gpa. Please Recheck and Try Again");
+			alert.setContentText("Invalid Gpa. Please recheck and try again.");
 			alert.showAndWait();
 			return false;
 		}

@@ -160,18 +160,20 @@ public class InstructorView {
 		
 		removeBtn.setOnAction(e -> {
 			outputField.clear();
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setHeaderText(null);
-			alert.setContentText("Are you sure you want to remove instructor with ID " + idField.getText() + "?");
-			Optional<ButtonType> action = alert.showAndWait();
+			if(checkTextFieldsAreValid() == true) {
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setHeaderText(null);
+				alert.setContentText("Are you sure you want to remove instructor with id " + idField.getText() + "?");
+				Optional<ButtonType> action = alert.showAndWait();
 			
-			if(action.get() == ButtonType.OK) {
-				outputField.appendText("Removed instructor with id " + idField.getText() + "!");
-				Person[] predicateDelete = instructorBag.delete(i -> i.getId().equals(idField.getText()));		
-				listView.getItems().remove(predicateDelete[0]);
-				listView.getSelectionModel().clearSelection();
-				clearTextFields();
-				Backup.backupPersonBag(instructorBag);
+				if(action.get() == ButtonType.OK) {
+					outputField.appendText("Removed instructor with id " + idField.getText() + "!");
+					Person[] predicateDelete = instructorBag.delete(i -> i.getId().equals(idField.getText()));		
+					listView.getItems().remove(predicateDelete[0]);
+					listView.getSelectionModel().clearSelection();
+					clearTextFields();
+					Backup.backupPersonBag(instructorBag);
+				}
 			}
 		});
 		
@@ -188,7 +190,7 @@ public class InstructorView {
 			} else if(!idField.getText().isEmpty()) {
 				Alert alert = new Alert(AlertType.ERROR);
 				alert.setHeaderText(null);
-				alert.setContentText("Cannot insert instructor with ID chosen by user. Clear ID field and try again.");
+				alert.setContentText("Cannot insert instructor with id chosen by user. Clear id field and try again.");
 				alert.showAndWait();
 			}
 		});
@@ -223,7 +225,7 @@ public class InstructorView {
 		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || rankField.getText().isEmpty() || salaryField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText(null);
-			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.setContentText("Please recheck Text Fields and try again.");
 			alert.showAndWait();
 			return false;
 			
@@ -232,7 +234,7 @@ public class InstructorView {
 			
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText(null);
-			alert.setContentText("Invalid instructor rank. Please Recheck and Try Again");
+			alert.setContentText("Invalid Instructor rank. Please recheck and try again.");
 			alert.showAndWait();
 			return false;
 		}

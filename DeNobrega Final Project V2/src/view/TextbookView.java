@@ -155,19 +155,21 @@ public class TextbookView {
 		});
 		
 		removeBtn.setOnAction(e -> {
-			outputField.clear();
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setHeaderText(null);
-			alert.setContentText("Are you sure you want to remove textbook with ISBN " + isbnField.getText() + "?");
-			Optional<ButtonType> action = alert.showAndWait();
+			if(checkTextFieldsAreValid() == true) {
+				outputField.clear();
+				Alert alert = new Alert(AlertType.CONFIRMATION);
+				alert.setHeaderText(null);
+				alert.setContentText("Are you sure you want to remove textbook with ISBN " + isbnField.getText() + "?");
+				Optional<ButtonType> action = alert.showAndWait();
 			
-			if(action.get() == ButtonType.OK) {
-				outputField.appendText("Removed textbook with isbn " + isbnField.getText() + "!");
-				Textbook[] predicateDelete = textbookBag.delete(t -> t.getIsbn().equals(isbnField.getText()));		
-				listView.getItems().remove(predicateDelete[0]);
-				listView.getSelectionModel().clearSelection();
-				clearTextFields();
-				Backup.backupTextbookBag(textbookBag);
+				if(action.get() == ButtonType.OK) {
+					outputField.appendText("Removed textbook with isbn " + isbnField.getText() + "!");
+					Textbook[] predicateDelete = textbookBag.delete(t -> t.getIsbn().equals(isbnField.getText()));		
+					listView.getItems().remove(predicateDelete[0]);
+					listView.getSelectionModel().clearSelection();
+					clearTextFields();
+					Backup.backupTextbookBag(textbookBag);
+				}
 			}
 		});
 		
@@ -220,7 +222,7 @@ public class TextbookView {
 		if(titleField.getText().isEmpty() || authorFirstNameField.getText().isEmpty() || authorLastNameField.getText().isEmpty() || priceField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.setHeaderText(null);
-			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.setContentText("Please recheck Text Fields and try again.");
 			alert.showAndWait();
 			return false;	
 		} 

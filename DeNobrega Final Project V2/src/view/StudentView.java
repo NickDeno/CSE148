@@ -107,7 +107,6 @@ public class StudentView {
 			outputField.clear();
 			listView.getItems().clear();
 			String userChoice = choiceBox.getValue();
-			
 			Person[] predicateSearch = studentBag.search(s -> {
 				if(s instanceof Student) {
 					if(userChoice.equals("ID")) {
@@ -133,7 +132,11 @@ public class StudentView {
 				return false;
 			});
 			
-			if(predicateSearch.length > 0) {
+			if(userChoice.equals("ID") && predicateSearch.length > 0) {
+				outputField.appendText("Student found with id " + idField.getText() + "!");
+				setTextFields(predicateSearch[0]);
+				
+			} else if(predicateSearch.length > 0) {
 				outputField.appendText("Search results:");
 				ObservableList<Person> results = FXCollections.observableArrayList(predicateSearch);
 				listView.getItems().addAll(results);
@@ -150,7 +153,6 @@ public class StudentView {
 						}
 					}	
 				});
-				
 			} else {	
 				outputField.appendText("No student matches found.");
 				clearTextFields();
@@ -219,7 +221,25 @@ public class StudentView {
 	public VBox getStudentPane() {
 		return studentPane;
 	}
-
+	
+	private boolean checkTextFieldsAreValid() {
+		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || gpaField.getText().isEmpty() || majorField.getText().isEmpty()) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Please Recheck Text Fields and Try Again.");
+			alert.showAndWait();
+			return false;
+			
+		} else if(Double.parseDouble(gpaField.getText()) > 4.0 || Double.parseDouble(gpaField.getText()) < 0.0 ) {
+			Alert alert = new Alert(AlertType.ERROR);
+			alert.setHeaderText(null);
+			alert.setContentText("Invalid Gpa. Please Recheck and Try Again");
+			alert.showAndWait();
+			return false;
+		}
+		return true;	
+	}	
+	
 	public void setTextFields(Person p) {
 		firstNameField.setText(p.getName().getFirstName());
 		lastNameField.setText(p.getName().getLastName());
@@ -243,21 +263,4 @@ public class StudentView {
 		listView.getItems().clear();
 	}
 	
-	private boolean checkTextFieldsAreValid() {
-		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || gpaField.getText().isEmpty() || majorField.getText().isEmpty()) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Please Recheck Text Fields and Try Again.");
-			alert.showAndWait();
-			return false;
-			
-		} else if(Double.parseDouble(gpaField.getText()) > 4.0 || Double.parseDouble(gpaField.getText()) < 0.0 ) {
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Invalid Gpa. Please Recheck and Try Again");
-			alert.showAndWait();
-			return false;
-		}
-		return true;	
-	}	
 }

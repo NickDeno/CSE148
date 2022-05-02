@@ -108,7 +108,6 @@ public class InstructorView {
 			outputField.clear();
 			listView.getItems().clear();
 			String userChoice = choiceBox.getValue();
-		
 			Person[] predicateSearch = instructorBag.search(i -> {
 				if(i instanceof Instructor) {
 					if(userChoice.equals("ID")) {
@@ -134,7 +133,11 @@ public class InstructorView {
 				return false;
 			});
 			
-			if(predicateSearch.length > 0) {
+			if(userChoice.equals("ID") && predicateSearch.length > 0) {
+				outputField.appendText("Instructor found with id " + idField.getText() + "!");
+				setTextFields(predicateSearch[0]);
+				
+			} else if(predicateSearch.length > 0) {
 				outputField.appendText("Search results:");
 				ObservableList<Person> results = FXCollections.observableArrayList(predicateSearch);
 				listView.getItems().addAll(results);

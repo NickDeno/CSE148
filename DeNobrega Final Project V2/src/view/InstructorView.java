@@ -25,6 +25,7 @@ import model.Instructor;
 import model.Name;
 import model.Person;
 import model.PersonBag;
+import model.Student;
 import util.Backup;
 
 public class InstructorView {
@@ -67,6 +68,7 @@ public class InstructorView {
 		idField = new TextField();
 		idField.setPrefSize(100, 30);
 		idField.setPromptText("ID");
+		idField.setEditable(false);
 		
 		Button searchBtn = new Button("SEARCH");
 		searchBtn.setPrefSize(80, 30);
@@ -87,7 +89,6 @@ public class InstructorView {
 		listView = new ListView<>();
 		listView.setMaxSize(700, 200);
 		
-		
 		HBox inputBox = new HBox(20);
 		inputBox.setAlignment(Pos.CENTER);
 		inputBox.getChildren().addAll(firstNameField, lastNameField, rankField, salaryField, idField);
@@ -99,6 +100,13 @@ public class InstructorView {
 		choiceBox = new ChoiceBox<>();
 		choiceBox.getItems().addAll("ID", "FIRST NAME" , "LAST NAME", "RANK", "SALARY");
 		choiceBox.setValue("Search Parameter:");
+		choiceBox.setOnAction(e -> {	
+			if(choiceBox.getValue().equals("ID")) {
+				idField.setEditable(true);
+			} else {
+				idField.setEditable(false);
+			}
+		});
 		
 		VBox outputBox = new VBox(30);
 		outputBox.setAlignment(Pos.CENTER);
@@ -107,33 +115,32 @@ public class InstructorView {
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
-			String userChoice = choiceBox.getValue();
 			Person[] predicateSearch = instructorBag.search(i -> {
 				if(i instanceof Instructor) {
-					if(userChoice.equals("ID")) {
+					if(choiceBox.getValue().equals("ID")) {
 						return i.getId().equals(idField.getText());
 					}
 					
-					if(userChoice.equals("FIRST NAME")) {
+					if(choiceBox.getValue().equals("FIRST NAME")) {
 						return i.getName().getFirstName().equals(firstNameField.getText());
 					}
 					
-					if(userChoice.equals("LAST NAME")) {
+					if(choiceBox.getValue().equals("LAST NAME")) {
 						return i.getName().getLastName().equals(lastNameField.getText());
 					}
 					
-					if(userChoice.equals("RANK")) {
+					if(choiceBox.getValue().equals("RANK")) {
 						return ((Instructor) i).getRank().equalsIgnoreCase(rankField.getText());
 					}
 					
-					if(userChoice.equals("SALARY")) {
+					if(choiceBox.getValue().equals("SALARY")) {
 						return ((Instructor) i).getSalary() == Double.parseDouble(salaryField.getText());
 					}	
 				}
 				return false;
 			});
 			
-			if(userChoice.equals("ID") && predicateSearch.length > 0) {
+			if(choiceBox.getValue().equals("ID") && predicateSearch.length > 0) {
 				outputField.appendText("Instructor found with id " + idField.getText() + "!");
 				setTextFields(predicateSearch[0]);
 				
@@ -185,14 +192,8 @@ public class InstructorView {
 				instructorBag.insert(i);
 				outputField.appendText("Inserted Instructor!");
 				clearTextFields();
-				Backup.backupPersonBag(instructorBag);
-				
-			} else if(!idField.getText().isEmpty()) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setHeaderText(null);
-				alert.setContentText("Cannot insert instructor with id chosen by user. Clear id field and try again.");
-				alert.showAndWait();
-			}
+				Backup.backupPersonBag(instructorBag);	
+			} 
 		});
 		
 		updateBtn.setOnAction(e -> {

@@ -66,6 +66,7 @@ public class TextbookView {
 		isbnField = new TextField();
 		isbnField.setPrefSize(120, 30);
 		isbnField.setPromptText("ISBN");
+		isbnField.setEditable(false);
 		
 		Button searchBtn = new Button("SEARCH");
 		searchBtn.setPrefSize(80, 30);
@@ -98,6 +99,13 @@ public class TextbookView {
 		choiceBox = new ChoiceBox<>();
 		choiceBox.getItems().addAll("TITLE", "ISBN", "AUTHOR FIRST NAME", "AUTHOR LAST NAME", "PRICE");
 		choiceBox.setValue("Search Parameter:");
+		choiceBox.setOnAction(e -> {	
+			if(choiceBox.getValue().equals("ID")) {
+				isbnField.setEditable(true);
+			} else {
+				isbnField.setEditable(false);
+			}
+		});
 		
 		VBox outputBox = new VBox(30);
 		outputBox.setAlignment(Pos.CENTER);
@@ -181,14 +189,8 @@ public class TextbookView {
 				textbookBag.insert(t);
 				outputField.appendText("Inserted Textbook");
 				clearTextFields();
-				Backup.backupTextbookBag(textbookBag);
-				
-			} else if(!isbnField.getText().isEmpty()) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setHeaderText(null);
-				alert.setContentText("Cannot insert textbook with ISBN chosen by user. Clear ISBN field and try again.");
-				alert.showAndWait();
-			}
+				Backup.backupTextbookBag(textbookBag);	
+			} 
 		});
 		
 		updateBtn.setOnAction(e -> {
@@ -250,7 +252,6 @@ public class TextbookView {
 		clearTextFields();
 		outputField.clear();
 		choiceBox.setValue("Search Parameter");
-		listView.getItems().clear();
-			
+		listView.getItems().clear();		
 	}	
 }

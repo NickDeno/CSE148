@@ -21,6 +21,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import model.Instructor;
 import model.Name;
 import model.Person;
 import model.PersonBag;
@@ -66,6 +67,7 @@ public class StudentView {
 		idField = new TextField();
 		idField.setPrefSize(100, 30);
 		idField.setPromptText("ID");
+		idField.setEditable(false);
 
 		Button searchBtn = new Button("SEARCH");
 		searchBtn.setPrefSize(80, 30);
@@ -86,7 +88,6 @@ public class StudentView {
 		listView = new ListView<>();
 		listView.setMaxSize(700, 200);
 		
-		
 		HBox inputBox = new HBox(20);
 		inputBox.setAlignment(Pos.CENTER);
 		inputBox.getChildren().addAll(firstNameField, lastNameField, gpaField, majorField, idField);
@@ -98,6 +99,13 @@ public class StudentView {
 		choiceBox = new ChoiceBox<>();
 		choiceBox.getItems().addAll("ID", "FIRST NAME" , "LAST NAME", "GPA", "MAJOR");
 		choiceBox.setValue("Search Parameter:");
+		choiceBox.setOnAction(e -> {	
+			if(choiceBox.getValue().equals("ID")) {
+				idField.setEditable(true);
+			} else {
+				idField.setEditable(false);
+			}
+		});
 		
 		VBox outputBox = new VBox(30);
 		outputBox.setAlignment(Pos.CENTER);
@@ -106,33 +114,32 @@ public class StudentView {
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
-			String userChoice = choiceBox.getValue();
 			Person[] predicateSearch = studentBag.search(s -> {
 				if(s instanceof Student) {
-					if(userChoice.equals("ID")) {
+					if(choiceBox.getValue().equals("ID")) {
 						return s.getId().equals(idField.getText());
 					}
 					
-					if(userChoice.equals("FIRST NAME")) {
+					if(choiceBox.getValue().equals("FIRST NAME")) {
 						return s.getName().getFirstName().equals(firstNameField.getText());
 					}
 					
-					if(userChoice.equals("LAST NAME")) {
+					if(choiceBox.getValue().equals("LAST NAME")) {
 						return s.getName().getLastName().equals(lastNameField.getText());
 					}
 					
-					if(userChoice.equals("MAJOR")) {
+					if(choiceBox.getValue().equals("MAJOR")) {
 						return ((Student) s).getMajor().equalsIgnoreCase(majorField.getText());
 					}
 					
-					if(userChoice.equals("GPA")) {
+					if(choiceBox.getValue().equals("GPA")) {
 						return ((Student) s).getGpa() == Double.parseDouble(gpaField.getText());
 					}
 				}
 				return false;
 			});
 			
-			if(userChoice.equals("ID") && predicateSearch.length > 0) {
+			if(choiceBox.getValue().equals("ID") && predicateSearch.length > 0) {
 				outputField.appendText("Student found with id " + idField.getText() + "!");
 				setTextFields(predicateSearch[0]);
 				
@@ -145,11 +152,7 @@ public class StudentView {
 					@Override
 					public void changed(ObservableValue<? extends Person> observable, Person oldPerson, Person newPerson) {
 						if(newPerson != null) {
-							firstNameField.setText(newPerson.getName().getFirstName());
-							lastNameField.setText(newPerson.getName().getLastName());
-							gpaField.setText(String.valueOf(((Student)newPerson).getGpa()));
-							majorField.setText(((Student)newPerson).getMajor());
-							idField.setText(newPerson.getId());
+							setTextFields(newPerson);
 						}
 					}	
 				});
@@ -181,20 +184,14 @@ public class StudentView {
 		
 		insertBtn.setOnAction(e -> {
 			outputField.clear();
-			listView.getItems().clear();
-			
+			listView.getItems().clear();	
 			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
 				Student s = new Student(new Name(firstNameField.getText(), lastNameField.getText()),  Double.parseDouble(gpaField.getText()), majorField.getText());
 				studentBag.insert(s);
 				outputField.appendText("Inserted Student!");
 				clearTextFields();
 				Backup.backupPersonBag(studentBag);	
-			} else if(!idField.getText().isEmpty()) {
-				Alert alert = new Alert(AlertType.ERROR);
-				alert.setHeaderText(null);
-				alert.setContentText("Cannot insert student with id chosen by user. Clear id field and try again.");
-				alert.showAndWait();
-			}
+			} 	
 		});
 		
 		updateBtn.setOnAction(e -> {

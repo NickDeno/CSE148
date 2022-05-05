@@ -38,10 +38,10 @@ public class MainView {
 	public MainView() {
 		personBag = new File("backupFolder/Persons.dat").exists() ? Restore.restorePersonBag() : new PersonBag(2000);
 		textbookBag = new File("backupFolder/Textbooks.dat").exists() ? Restore.restoreTextbookBag() : new TextbookBag(39000);
-		root = new BorderPane();	
 		studentView = new StudentView(personBag);
 		instructorView = new InstructorView(personBag);
 		textbookView = new TextbookView(textbookBag);
+		root = new BorderPane();	
 		VBox startView = makeStartingView();	
 		
 		MenuBar menuBar = new MenuBar();		

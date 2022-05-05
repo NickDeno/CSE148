@@ -41,6 +41,11 @@ public class StudentView {
 	
 	private ChoiceBox<String> choiceBox;
 	private ListView<Person> listView;
+	
+	private static final String[] validMajors = {"ACC", "BUS", "MKT", "RET", "AUT", "CYB", "COT", "DRF", "ELT", "ENS", "FPT", "TYT", "CHI", "CIN", "COM", "DNC", "DMA", 
+			"ENG", "FRE", "GER", "GRD", "HUM", "INT", "ITL", "JPN", "LAT", "MUS", "MTR", "PHL", "ART", "SPN", "THR", "WST", "HIS", "SOC", "ASL", "CDC", "DTE", "PAR", "PFS",
+			"HSC", "MED", "HIT", "HUS", "NUR", "OTA", "PED", "PTA", "PNU", "AST", "BIO", "CHE", "ESC", "ENV", "MAR", "MAT", "MET", "PHY", "ANT", "ECO", "GEO", "POL", "PSY",
+			"COL", "CSE", "CRJ", "CUL", "EDU", "ESL", "HVA", "HRM", "CST", "IND", "LAW", "LIB", "MFT", "POA", "RTV", "RDG", "VST"};
 
 	public StudentView(PersonBag studentBag) {
 		this.studentBag = studentBag;
@@ -215,7 +220,7 @@ public class StudentView {
 		studentPane.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #1d67a3, #232526 )");
 	}
 	
-	//StudentView Methods.
+	//StudentView Methods
 	public VBox getStudentPane() {
 		return studentPane;
 	}
@@ -234,6 +239,20 @@ public class StudentView {
 			alert.setContentText("Invalid Gpa. Please recheck and try again.");
 			alert.showAndWait();
 			return false;
+		} else {
+			boolean foundMajor = false;
+			for(int i = 0; i < validMajors.length; i++) {
+				if(majorField.getText().equals(validMajors[i])) {
+					foundMajor = true;
+				}
+			}
+			if(foundMajor == false) {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setHeaderText(null);
+				alert.setContentText("Invalid Rank. Please recheck and try again.");
+				alert.showAndWait();
+				return false;
+			}
 		}
 		return true;	
 	}	

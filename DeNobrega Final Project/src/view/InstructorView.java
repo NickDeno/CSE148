@@ -42,6 +42,8 @@ public class InstructorView {
 	private ChoiceBox<String> choiceBox;
 	private ListView<Person> listView;
 	
+	private static final String[] validRanks = {"Instructor", "Assistant Professor", "Associate Professor", "Professor"};
+	
 	public InstructorView(PersonBag instructorBag) {
 		this.instructorBag = instructorBag;
 		
@@ -230,14 +232,20 @@ public class InstructorView {
 			alert.showAndWait();
 			return false;
 			
-		} else if(!(rankField.getText().equalsIgnoreCase("Instructor") || rankField.getText().equalsIgnoreCase("Assistant Professor") || 
-				rankField.getText().equalsIgnoreCase("Associate Professor") || rankField.getText().equalsIgnoreCase("Professor"))) {
-			
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Invalid Instructor rank. Please recheck and try again.");
-			alert.showAndWait();
-			return false;
+		} else {
+			boolean foundRank = false;
+			for(int i = 0; i < validRanks.length; i++) {
+				if(rankField.getText().equals(validRanks[i])) {
+					foundRank = true;
+				}
+				if(foundRank == false) {
+					Alert alert = new Alert(AlertType.ERROR);
+					alert.setHeaderText(null);
+					alert.setContentText("Invalid Instructor rank. Please recheck and try again.");
+					alert.showAndWait();
+					return false;
+				}
+			}
 		}
 		return true;	
 	}	

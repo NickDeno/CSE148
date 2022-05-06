@@ -29,7 +29,7 @@ import model.Student;
 import util.Backup;
 
 public class InstructorView {
-	private PersonBag instructorBag;
+	private PersonBag personBag;
 	private VBox instructorPane;
 	
 	private TextField firstNameField;
@@ -44,8 +44,8 @@ public class InstructorView {
 	
 	private static final String[] validRanks = {"Instructor", "Assistant Professor", "Associate Professor", "Professor"};
 	
-	public InstructorView(PersonBag instructorBag) {
-		this.instructorBag = instructorBag;
+	public InstructorView(PersonBag personBag) {
+		this.personBag = personBag;
 		
 		Text title = new Text("Instructor View");
 		title.setFill(Paint.valueOf("#ffffff"));
@@ -117,7 +117,7 @@ public class InstructorView {
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
-			Person[] predicateSearch = instructorBag.search(i -> {
+			Person[] predicateSearch = personBag.search(i -> {
 				if(i instanceof Instructor) {
 					if(choiceBox.getValue().equals("ID")) {
 						return i.getId().equals(idField.getText());
@@ -177,11 +177,11 @@ public class InstructorView {
 			
 				if(action.get() == ButtonType.OK) {
 					outputField.appendText("Removed instructor with id " + idField.getText() + "!");
-					Person[] predicateDelete = instructorBag.delete(i -> i.getId().equals(idField.getText()));		
+					Person[] predicateDelete = personBag.delete(i -> i.getId().equals(idField.getText()));		
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupPersonBag(instructorBag);
+					Backup.backupPersonBag(personBag);
 				}
 			}
 		});
@@ -191,16 +191,16 @@ public class InstructorView {
 			listView.getItems().clear();
 			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
 				Instructor i = new Instructor(new Name(firstNameField.getText(), lastNameField.getText()), rankField.getText(), Double.parseDouble(salaryField.getText()));
-				instructorBag.insert(i);
+				personBag.insert(i);
 				outputField.appendText("Inserted Instructor!");
 				clearTextFields();
-				Backup.backupPersonBag(instructorBag);	
+				Backup.backupPersonBag(personBag);	
 			} 
 		});
 		
 		updateBtn.setOnAction(e -> {
 			outputField.clear();	
-			Person[] instructorToUpdate = instructorBag.search(s -> s.getId().equals(idField.getText()));
+			Person[] instructorToUpdate = personBag.search(s -> s.getId().equals(idField.getText()));
 			if(checkTextFieldsAreValid() == true) {
 				instructorToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
 				((Instructor)instructorToUpdate[0]).setRank(rankField.getText());
@@ -208,7 +208,7 @@ public class InstructorView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Instructor with id " + idField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupPersonBag(instructorBag);
+				Backup.backupPersonBag(personBag);
 			}	
 		});
 		
@@ -227,8 +227,8 @@ public class InstructorView {
 	private boolean checkTextFieldsAreValid() {
 		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || rankField.getText().isEmpty() || salaryField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Please recheck Text Fields and try again.");
+			alert.setHeaderText("Blank Text Fields");
+			alert.setContentText("One or more text fields may have been left blank. Please recheck text fields and try again.");
 			alert.showAndWait();
 			return false;
 			
@@ -240,8 +240,8 @@ public class InstructorView {
 				}
 				if(foundRank == false) {
 					Alert alert = new Alert(AlertType.ERROR);
-					alert.setHeaderText(null);
-					alert.setContentText("Invalid Instructor rank. Please recheck and try again.");
+					alert.setHeaderText("Invalid Rank");
+					alert.setContentText("Please enter a valid rank then try again.");
 					alert.showAndWait();
 					return false;
 				}

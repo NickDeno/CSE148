@@ -223,8 +223,8 @@ public class TextbookView {
 	private boolean checkTextFieldsAreValid() {
 		if(titleField.getText().isEmpty() || authorFirstNameField.getText().isEmpty() || authorLastNameField.getText().isEmpty() || priceField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Please recheck Text Fields and try again.");
+			alert.setHeaderText("Blank Text Fields");
+			alert.setContentText("One or more text fields may have been left blank. Please recheck text fields and try again.");
 			alert.showAndWait();
 			return false;	
 		} 

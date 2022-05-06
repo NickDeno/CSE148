@@ -29,7 +29,7 @@ import model.Student;
 import util.Backup;
 
 public class StudentView {
-	private PersonBag studentBag;
+	private PersonBag personBag;
 	private VBox studentPane;
 	
 	private TextField firstNameField;
@@ -47,8 +47,8 @@ public class StudentView {
 			"HSC", "MED", "HIT", "HUS", "NUR", "OTA", "PED", "PTA", "PNU", "AST", "BIO", "CHE", "ESC", "ENV", "MAR", "MAT", "MET", "PHY", "ANT", "ECO", "GEO", "POL", "PSY",
 			"COL", "CSE", "CRJ", "CUL", "EDU", "ESL", "HVA", "HRM", "CST", "IND", "LAW", "LIB", "MFT", "POA", "RTV", "RDG", "VST"};
 
-	public StudentView(PersonBag studentBag) {
-		this.studentBag = studentBag;
+	public StudentView(PersonBag personBag) {
+		this.personBag = personBag;
 		Text title = new Text("Student View");
 		title.setFill(Paint.valueOf("#ffffff"));
 		title.setFont(Font.font("Baskerville Old Face",FontWeight.BOLD, 60));
@@ -119,7 +119,7 @@ public class StudentView {
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
-			Person[] predicateSearch = studentBag.search(s -> {
+			Person[] predicateSearch = personBag.search(s -> {
 				if(s instanceof Student) {
 					if(choiceBox.getValue().equals("ID")) {
 						return s.getId().equals(idField.getText());
@@ -178,11 +178,11 @@ public class StudentView {
 				
 				if(action.get() == ButtonType.OK) {
 					outputField.appendText("Removed student with id " + idField.getText() + "!");
-					Person[] predicateDelete = studentBag.delete(s -> s.getId().equals(idField.getText()));		
+					Person[] predicateDelete = personBag.delete(s -> s.getId().equals(idField.getText()));		
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupPersonBag(studentBag);
+					Backup.backupPersonBag(personBag);
 				}	
 			}
 		});
@@ -192,16 +192,16 @@ public class StudentView {
 			listView.getItems().clear();	
 			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
 				Student s = new Student(new Name(firstNameField.getText(), lastNameField.getText()),  Double.parseDouble(gpaField.getText()), majorField.getText());
-				studentBag.insert(s);
+				personBag.insert(s);
 				outputField.appendText("Inserted Student!");
 				clearTextFields();
-				Backup.backupPersonBag(studentBag);	
+				Backup.backupPersonBag(personBag);	
 			} 	
 		});
 		
 		updateBtn.setOnAction(e -> {
 			outputField.clear();
-			Person[] studentToUpdate = studentBag.search(s -> s.getId().equals(idField.getText()));	
+			Person[] studentToUpdate = personBag.search(s -> s.getId().equals(idField.getText()));	
 			if(checkTextFieldsAreValid() == true) {
 				studentToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
 				((Student)studentToUpdate[0]).setMajor(majorField.getText());
@@ -209,7 +209,7 @@ public class StudentView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Student with id " + idField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupPersonBag(studentBag);
+				Backup.backupPersonBag(personBag);
 			}
 		});
 		
@@ -228,15 +228,15 @@ public class StudentView {
 	private boolean checkTextFieldsAreValid() {
 		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || gpaField.getText().isEmpty() || majorField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Please recheck Text Fields and try again.");
+			alert.setHeaderText("Blank Text Fields");
+			alert.setContentText("One or more text fields may have been left blank. Please recheck text fields and try again.");
 			alert.showAndWait();
 			return false;
 			
 		} else if(Double.parseDouble(gpaField.getText()) > 4.0 || Double.parseDouble(gpaField.getText()) < 0.0 ) {
 			Alert alert = new Alert(AlertType.ERROR);
-			alert.setHeaderText(null);
-			alert.setContentText("Invalid Gpa. Please recheck and try again.");
+			alert.setHeaderText("Invalid Gpa");
+			alert.setContentText("Please enter a gpa between 0.0 and 4.0 then try again.");
 			alert.showAndWait();
 			return false;
 		} else {
@@ -248,8 +248,8 @@ public class StudentView {
 			}
 			if(foundMajor == false) {
 				Alert alert = new Alert(AlertType.ERROR);
-				alert.setHeaderText(null);
-				alert.setContentText("Invalid Rank. Please recheck and try again.");
+				alert.setHeaderText("Invalid Major");
+				alert.setContentText("Please enter a valid major then try again.");
 				alert.showAndWait();
 				return false;
 			}

@@ -37,41 +37,43 @@ public class MainView {
 	
 	public MainView() {
 		personBag = new File("backupFolder/Persons.dat").exists() ? Restore.restorePersonBag() : new PersonBag(2000);
-		textbookBag = new File("backupFolder/Textbooks.dat").exists() ? Restore.restoreTextbookBag() : new TextbookBag(39000);
+		textbookBag = new File("backupFolder/Textbooks.dat").exists() ? Restore.restoreTextbookBag() : new TextbookBag(40000);
 		studentView = new StudentView(personBag);
 		instructorView = new InstructorView(personBag);
 		textbookView = new TextbookView(textbookBag);
-		root = new BorderPane();	
+		root = new BorderPane();		
 		VBox startView = makeStartingView();	
 		
 		MenuBar menuBar = new MenuBar();		
-		
 		Menu fileMenu = new Menu("File");
 		Menu importMenu = new Menu("Import (FIRST LAUNCH ONLY)");
+		Menu backupMenu = new Menu("Backup");
+		Menu viewMenu = new Menu("View");
+		Menu clearMenu = new Menu("Clear");	
 		MenuItem importStudentsItem = new MenuItem("Import Students");
 		MenuItem importInstructorsItem = new MenuItem("Import Instructors");
 		MenuItem importTextbooksItem = new MenuItem("Import Textbooks");
-		importMenu.getItems().addAll(importStudentsItem, importInstructorsItem, importTextbooksItem);
-		Menu backupMenu = new Menu("Backup");
 		MenuItem backupPersonsItem = new MenuItem("Backup Students/Instructors");
 		MenuItem backupTextbooksItem = new MenuItem("Backup Textbooks");
-		backupMenu.getItems().addAll(backupPersonsItem, backupTextbooksItem);
-		SeparatorMenuItem separator = new SeparatorMenuItem();
 		MenuItem exitItem = new MenuItem("Exit");		
-		fileMenu.getItems().addAll(importMenu, backupMenu, separator, exitItem);
-	
-		Menu viewMenu = new Menu("View");
 		MenuItem studentViewItem = new MenuItem("Student View");
 		MenuItem instructorViewItem = new MenuItem("Instructor View");
 		MenuItem textbookViewItem = new MenuItem("Textbook View");	
-		SeparatorMenuItem separator2 = new SeparatorMenuItem();
 		MenuItem mainMenuViewItem = new MenuItem("Return to Menu");
-		viewMenu.getItems().addAll(studentViewItem, instructorViewItem, textbookViewItem, separator2, mainMenuViewItem);
-		
-		Menu clearMenu = new Menu("Clear");
 		MenuItem clearTextFieldsItem = new MenuItem("Clear Text Fields");
 		MenuItem clearAllFieldsItem = new MenuItem("Clear All Fields");
+		SeparatorMenuItem separator = new SeparatorMenuItem();
+		SeparatorMenuItem separator2 = new SeparatorMenuItem();
+		
+		importMenu.getItems().addAll(importStudentsItem, importInstructorsItem, importTextbooksItem);
+		backupMenu.getItems().addAll(backupPersonsItem, backupTextbooksItem);
+		fileMenu.getItems().addAll(importMenu, backupMenu, separator, exitItem);
+		viewMenu.getItems().addAll(studentViewItem, instructorViewItem, textbookViewItem, separator2, mainMenuViewItem);
 		clearMenu.getItems().addAll(clearTextFieldsItem, clearAllFieldsItem);
+		menuBar.getMenus().addAll(fileMenu, viewMenu, clearMenu);
+		
+		root.setTop(menuBar);
+		root.setCenter(startView);
 		
 		importStudentsItem.setOnAction(e -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -201,10 +203,6 @@ public class MainView {
 				textbookView.clearAllFields();
 			}
 		});
-		
-		menuBar.getMenus().addAll(fileMenu, viewMenu, clearMenu);
-		root.setTop(menuBar);
-		root.setCenter(startView);
 	}
 
 	public BorderPane getRoot() {

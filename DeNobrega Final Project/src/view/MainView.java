@@ -42,16 +42,19 @@ public class MainView {
 		instructorView = new InstructorView(personBag);
 		textbookView = new TextbookView(textbookBag);
 		root = new BorderPane();		
+		
+		MenuBar menuBar = new MenuBar();	
 		VBox startView = makeStartingView();	
 		
-		MenuBar menuBar = new MenuBar();		
+		root.setTop(menuBar);
+		root.setCenter(startView);
+			
 		Menu fileMenu = new Menu("File");
 		Menu importMenu = new Menu("Import (FIRST LAUNCH ONLY)");
 		Menu backupMenu = new Menu("Backup");
 		Menu viewMenu = new Menu("View");
 		Menu clearMenu = new Menu("Clear");	
-		MenuItem importStudentsItem = new MenuItem("Import Students");
-		MenuItem importInstructorsItem = new MenuItem("Import Instructors");
+		MenuItem importPersonsItem = new MenuItem("Import Students/Instructors");
 		MenuItem importTextbooksItem = new MenuItem("Import Textbooks");
 		MenuItem backupPersonsItem = new MenuItem("Backup Students/Instructors");
 		MenuItem backupTextbooksItem = new MenuItem("Backup Textbooks");
@@ -65,44 +68,26 @@ public class MainView {
 		SeparatorMenuItem separator = new SeparatorMenuItem();
 		SeparatorMenuItem separator2 = new SeparatorMenuItem();
 		
-		importMenu.getItems().addAll(importStudentsItem, importInstructorsItem, importTextbooksItem);
+		importMenu.getItems().addAll(importPersonsItem, importTextbooksItem);
 		backupMenu.getItems().addAll(backupPersonsItem, backupTextbooksItem);
 		fileMenu.getItems().addAll(importMenu, backupMenu, separator, exitItem);
 		viewMenu.getItems().addAll(studentViewItem, instructorViewItem, textbookViewItem, separator2, mainMenuViewItem);
 		clearMenu.getItems().addAll(clearTextFieldsItem, clearAllFieldsItem);
 		menuBar.getMenus().addAll(fileMenu, viewMenu, clearMenu);
 		
-		root.setTop(menuBar);
-		root.setCenter(startView);
-		
-		importStudentsItem.setOnAction(e -> {
+		importPersonsItem.setOnAction(e -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setHeaderText(null);
-			alert.setContentText("Importing students should only be done on first launch. Do you want to continue?");
+			alert.setContentText("Importing students and instructors should only be done on first launch. Do you want to continue?");
 			Optional<ButtonType> action = alert.showAndWait();
 			if(action.get() == ButtonType.OK) {
 				Utilities.importStudents(personBag);
-				Backup.backupPersonBag(personBag);
-				Alert successAlert = new Alert(AlertType.INFORMATION);
-				successAlert.setTitle("Import Successful");
-				successAlert.setHeaderText(null);
-				successAlert.setContentText("Students have been imported!");
-				successAlert.showAndWait();
-			}
-		});
-		
-		importInstructorsItem.setOnAction(e -> {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
-			alert.setHeaderText(null);
-			alert.setContentText("Importing Instructors should only be done on first launch. Do you want to continue?");
-			Optional<ButtonType> action = alert.showAndWait();
-			if(action.get() == ButtonType.OK) {
 				Utilities.importInstructors(personBag);
 				Backup.backupPersonBag(personBag);
 				Alert successAlert = new Alert(AlertType.INFORMATION);
 				successAlert.setTitle("Import Successful");
 				successAlert.setHeaderText(null);
-				successAlert.setContentText("Instructors have been imported!");
+				successAlert.setContentText("Students and instructors have been imported!");
 				successAlert.showAndWait();
 			}
 		});

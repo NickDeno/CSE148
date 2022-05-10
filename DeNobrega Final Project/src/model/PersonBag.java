@@ -7,18 +7,10 @@ import java.util.function.Predicate;
 public class PersonBag implements Serializable {
 	private Person[] arr;
 	private int nElems;
-//	private static PersonBag personBag;
 
 	public PersonBag(int maxSize) {
 		arr = new Person[maxSize];
 	}
-	
-//	public static PersonBag getPersonBag(int maxSize) {
-//		if(personBag == null) {
-//			personBag = new PersonBag(maxSize);
-//		}
-//		return personBag;
-//	}
 	
 	public void insert(Person person) {
 		arr[nElems++] = person;
@@ -62,5 +54,4 @@ public class PersonBag implements Serializable {
 	public int getnElems() {
 		return nElems;
 	}
-
 }

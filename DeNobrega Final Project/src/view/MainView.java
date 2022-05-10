@@ -92,15 +92,16 @@ public class MainView {
 			alert.setContentText("To import an exisiting PersonBag, please select an existing .dat file that contains students/instructors.");
 			alert.showAndWait();
 			selectedPersonsFile = fileChooser.showOpenDialog(null);
-			
-			personBag = Restore.restorePersonBag(selectedPersonsFile);
-			studentView.setBag(personBag);
-			studentView.setSelectedFile(selectedPersonsFile);
-			Backup.backupPersonBag(personBag, selectedPersonsFile);
-			
-			alert.setTitle("Import Sucessful");
-			alert.setContentText("The selected PersonBag file was sucessfully imported!");
-			alert.showAndWait();
+			if(selectedPersonsFile != null) {
+				personBag = Restore.restorePersonBag(selectedPersonsFile);
+				studentView.setBag(personBag);
+				studentView.setSelectedFile(selectedPersonsFile);
+				Backup.backupPersonBag(personBag, selectedPersonsFile);
+				
+				alert.setTitle("Import Sucessful");
+				alert.setContentText("The selected PersonBag file was sucessfully imported!");
+				alert.showAndWait();	
+			}
 		});
 	
 		importNewPersonsItem.setOnAction(e -> {
@@ -110,22 +111,23 @@ public class MainView {
 			alert.setContentText("To import a new PersonBag, please choose a location and create a new .dat file. "
 					+ "This file will then be loaded with 1000 random students and 500 random instructors.");
 			alert.showAndWait();
-			selectedPersonsFile = fileChooser.showSaveDialog(null);
-			
-			personBag = new PersonBag(2000);
-			Utilities.importStudents(personBag);
-			Utilities.importInstructors(personBag);
-			Backup.backupPersonBag(personBag, selectedPersonsFile);
-			studentView.setBag(personBag);
-			studentView.setSelectedFile(selectedPersonsFile);
-			instructorView.setPersonBag(personBag);
-			instructorView.setSelectedFile(selectedPersonsFile);
-			
-			alert.setTitle("New PersonBag Created");
-			alert.setContentText("A new PersonBag file was successfuly created with 1000 random students and 500 random instructors at " + selectedPersonsFile );
-			alert.setWidth(500);
-			alert.setHeight(175);
-			alert.showAndWait();
+			selectedPersonsFile = fileChooser.showSaveDialog(null);	
+			if(selectedPersonsFile != null) {
+				personBag = new PersonBag(2000);
+				Utilities.importStudents(personBag);
+				Utilities.importInstructors(personBag);
+				Backup.backupPersonBag(personBag, selectedPersonsFile);
+				studentView.setBag(personBag);
+				studentView.setSelectedFile(selectedPersonsFile);
+				instructorView.setPersonBag(personBag);
+				instructorView.setSelectedFile(selectedPersonsFile);
+				
+				alert.setTitle("New PersonBag Created");
+				alert.setContentText("A new PersonBag file was successfuly created with 1000 random students and 500 random instructors at " + selectedPersonsFile );
+				alert.setWidth(500);
+				alert.setHeight(175);
+				alert.showAndWait();
+			}
 		});
 	
 		importExisitingTextbooksItem.setOnAction(e -> {
@@ -135,15 +137,16 @@ public class MainView {
 			alert.setContentText("To import an exisiting TextbookBag, please select an existing .dat file that contains textbooks.");
 			alert.showAndWait();
 			selectedTextbooksFile = fileChooser.showOpenDialog(null);
-			
-			textbookBag = Restore.restoreTextbookBag(selectedTextbooksFile);
-			textbookView.setTextbookBag(textbookBag);
-			textbookView.setSelectedFile(selectedPersonsFile);
-			Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
-			
-			alert.setTitle("Import Sucessful");
-			alert.setContentText("The selected TextbookBag file was sucessfully imported!");
-			alert.showAndWait();
+			if(selectedTextbooksFile != null) {
+				textbookBag = Restore.restoreTextbookBag(selectedTextbooksFile);
+				textbookView.setTextbookBag(textbookBag);
+				textbookView.setSelectedFile(selectedPersonsFile);
+				Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+				
+				alert.setTitle("Import Sucessful");
+				alert.setContentText("The selected TextbookBag file was sucessfully imported!");
+				alert.showAndWait();
+			}
 		});
 	
 		importNewTextbooksItem.setOnAction(e -> {
@@ -153,18 +156,19 @@ public class MainView {
 			alert.setContentText("To import a new TextbookBag, please choose a location and create a new .dat file.");
 			alert.showAndWait();
 			selectedTextbooksFile = fileChooser.showSaveDialog(null);
-			
-			textbookBag = new TextbookBag(40000);
-			Utilities.importTextbooks(textbookBag);
-			Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
-			textbookView.setTextbookBag(textbookBag);
-			textbookView.setSelectedFile(selectedTextbooksFile);
-			
-			alert.setTitle("New TextbookBag Created");
-			alert.setWidth(500);
-			alert.setHeight(175);
-			alert.setContentText("A new TextbookBag file was successfuly created at " + selectedTextbooksFile);
-			alert.showAndWait();
+			if(selectedTextbooksFile != null) {
+				textbookBag = new TextbookBag(40000);
+				Utilities.importTextbooks(textbookBag);
+				Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+				textbookView.setTextbookBag(textbookBag);
+				textbookView.setSelectedFile(selectedTextbooksFile);
+				
+				alert.setTitle("New TextbookBag Created");
+				alert.setWidth(500);
+				alert.setHeight(175);
+				alert.setContentText("A new TextbookBag file was successfuly created at " + selectedTextbooksFile);
+				alert.showAndWait();
+			}
 		});
 	
 		backupPersonsItem.setOnAction(e -> {

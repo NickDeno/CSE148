@@ -25,7 +25,6 @@ import model.Instructor;
 import model.Name;
 import model.Person;
 import model.PersonBag;
-import model.Student;
 import util.Backup;
 
 public class InstructorView {

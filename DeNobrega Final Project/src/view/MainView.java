@@ -1,8 +1,6 @@
 package view;
 
-import java.io.File;
 import java.util.Optional;
-
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -23,29 +21,26 @@ import javafx.scene.text.Text;
 import model.PersonBag;
 import model.TextbookBag;
 import util.Backup;
-import util.Restore;
 import util.Utilities;
 
 public class MainView {
-	private BorderPane root;
 	private PersonBag personBag;
 	private TextbookBag textbookBag;
-	
 	private StudentView studentView;
 	private InstructorView instructorView;
 	private TextbookView textbookView;
+	private BorderPane root;
 	
-	public MainView() {
-		personBag = new File("backupFolder/Persons.dat").exists() ? Restore.restorePersonBag() : new PersonBag(2000);
-		textbookBag = new File("backupFolder/Textbooks.dat").exists() ? Restore.restoreTextbookBag() : new TextbookBag(40000);
-		studentView = new StudentView(personBag);
-		instructorView = new InstructorView(personBag);
-		textbookView = new TextbookView(textbookBag);
-		root = new BorderPane();		
+	public MainView(PersonBag personBag, TextbookBag textbookBag) {
+		this.personBag = personBag;
+		this.textbookBag = textbookBag;
+		studentView = new StudentView(this.personBag);
+		instructorView = new InstructorView(this.personBag);
+		textbookView = new TextbookView(this.textbookBag);
 		
+		root = new BorderPane();		
 		MenuBar menuBar = new MenuBar();	
 		VBox startView = makeStartingView();	
-		
 		root.setTop(menuBar);
 		root.setCenter(startView);
 			
@@ -81,14 +76,15 @@ public class MainView {
 			alert.setContentText("Importing students and instructors should only be done on first launch. Do you want to continue?");
 			Optional<ButtonType> action = alert.showAndWait();
 			if(action.get() == ButtonType.OK) {
-				Utilities.importStudents(personBag);
-				Utilities.importInstructors(personBag);
-				Backup.backupPersonBag(personBag);
+				Utilities.importStudents(this.personBag);
+				Utilities.importInstructors(this.personBag);
+				Backup.backupPersonBag(this.personBag);
 				Alert successAlert = new Alert(AlertType.INFORMATION);
 				successAlert.setTitle("Import Successful");
 				successAlert.setHeaderText(null);
 				successAlert.setContentText("Students and instructors have been imported!");
 				successAlert.showAndWait();
+	
 			}
 		});
 		
@@ -98,8 +94,8 @@ public class MainView {
 			alert.setContentText("Importing Textbooks should only be done on first launch. Do you want to continue?");
 			Optional<ButtonType> action = alert.showAndWait();
 			if(action.get() == ButtonType.OK) {
-				Utilities.importTextbooks(textbookBag);
-				Backup.backupTextbookBag(textbookBag);
+				Utilities.importTextbooks(this.textbookBag);
+				Backup.backupTextbookBag(this.textbookBag);
 				Alert successAlert = new Alert(AlertType.INFORMATION);
 				successAlert.setTitle("Import Successful");
 				successAlert.setHeaderText(null);
@@ -109,7 +105,7 @@ public class MainView {
 		});
 		
 		backupPersonsItem.setOnAction(e -> {
-			Backup.backupPersonBag(personBag);
+			Backup.backupPersonBag(this.personBag);
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Backup Successful");
 			alert.setHeaderText(null);
@@ -118,7 +114,7 @@ public class MainView {
 		});	
 		
 		backupTextbooksItem.setOnAction(e -> {
-			Backup.backupTextbookBag(textbookBag);
+			Backup.backupTextbookBag(this.textbookBag);
 			Alert alert = new Alert(AlertType.INFORMATION);
 			alert.setTitle("Backup Successful");
 			alert.setHeaderText(null);
@@ -132,8 +128,8 @@ public class MainView {
 			alert.setContentText("Are you sure you want to exit? Students, Instructors, and Textbooks will be backed up on exit.");
 			Optional<ButtonType> action = alert.showAndWait();
 			if(action.get() == ButtonType.OK) {
-				Backup.backupPersonBag(personBag);
-				Backup.backupTextbookBag(textbookBag);
+				Backup.backupPersonBag(this.personBag);
+				Backup.backupTextbookBag(this.textbookBag);
 				Platform.exit();
 			}
 		});

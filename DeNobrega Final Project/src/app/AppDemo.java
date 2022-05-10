@@ -1,10 +1,14 @@
 package app;
 
-import view.MainView;
+import java.io.File;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import model.PersonBag;
+import model.TextbookBag;
+import util.Restore;
+import view.MainView;
 
 public class AppDemo extends Application {
 	
@@ -14,7 +18,9 @@ public class AppDemo extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		MainView mainView = new MainView();
+		PersonBag personBag = new File("backupFolder/Persons.dat").exists() ? Restore.restorePersonBag() : new PersonBag(2000);
+		TextbookBag textbookBag = new File("backupFolder/Textbooks.dat").exists() ? Restore.restoreTextbookBag() : new TextbookBag(40000);
+		MainView mainView = new MainView(personBag, textbookBag);	
 		Scene scene = new Scene(mainView.getRoot(), 1000, 700);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("DeNobrega Final Project");

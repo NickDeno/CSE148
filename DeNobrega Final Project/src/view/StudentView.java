@@ -21,7 +21,6 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import model.Instructor;
 import model.Name;
 import model.Person;
 import model.PersonBag;

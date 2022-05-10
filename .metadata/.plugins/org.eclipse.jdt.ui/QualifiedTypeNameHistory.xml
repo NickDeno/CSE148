@@ -35,7 +35,6 @@
     <fullyQualifiedTypeName name="model.PersonBag"/>
     <fullyQualifiedTypeName name="model.TextbookBag"/>
     <fullyQualifiedTypeName name="javafx.stage.Stage"/>
-    <fullyQualifiedTypeName name="view.MainView"/>
     <fullyQualifiedTypeName name="javafx.scene.text.Text"/>
     <fullyQualifiedTypeName name="javafx.scene.paint.Paint"/>
     <fullyQualifiedTypeName name="java.awt.Font"/>
@@ -45,7 +44,6 @@
     <fullyQualifiedTypeName name="javafx.scene.layout.Background"/>
     <fullyQualifiedTypeName name="util.Utilities"/>
     <fullyQualifiedTypeName name="util.Restore"/>
-    <fullyQualifiedTypeName name="java.io.File"/>
     <fullyQualifiedTypeName name="javafx.scene.control.Button"/>
     <fullyQualifiedTypeName name="javafx.scene.layout.HBox"/>
     <fullyQualifiedTypeName name="javafx.scene.layout.VBox"/>
@@ -56,8 +54,10 @@
     <fullyQualifiedTypeName name="java.util.Optional"/>
     <fullyQualifiedTypeName name="javafx.scene.control.ButtonType"/>
     <fullyQualifiedTypeName name="java.lang.Double"/>
-    <fullyQualifiedTypeName name="javafx.stage.FileChooser"/>
-    <fullyQualifiedTypeName name="javafx.stage.FileChooser.ExtensionFilter"/>
     <fullyQualifiedTypeName name="javafx.scene.control.Label"/>
     <fullyQualifiedTypeName name="javafx.scene.control.TextInputDialog"/>
+    <fullyQualifiedTypeName name="view.MainView"/>
+    <fullyQualifiedTypeName name="javafx.stage.FileChooser"/>
+    <fullyQualifiedTypeName name="java.io.File"/>
+    <fullyQualifiedTypeName name="javafx.stage.FileChooser.ExtensionFilter"/>
 </qualifiedTypeNameHistroy>

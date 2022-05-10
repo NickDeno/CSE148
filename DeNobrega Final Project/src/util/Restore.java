@@ -3,7 +3,6 @@ package util;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-
 import model.Person;
 import model.PersonBag;
 import model.TextbookBag;

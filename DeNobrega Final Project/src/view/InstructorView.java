@@ -143,11 +143,11 @@ public class InstructorView {
 				return false;
 			});
 			
-			if(choiceBox.getValue().equals("ID") && predicateSearch.length > 0) {
+			if(choiceBox.getValue().equals("ID") && predicateSearch.length > 0) { // If user searches by ID and gets a match, 
 				outputField.appendText("Instructor found with id " + idField.getText() + "!");
 				setTextFields(predicateSearch[0]);
 				
-			} else if(predicateSearch.length > 0) {
+			} else if(predicateSearch.length > 0) { // If users searches by anything else and gets a match,
 				outputField.appendText("Search results:");
 				ObservableList<Person> results = FXCollections.observableArrayList(predicateSearch);
 				listView.getItems().addAll(results);
@@ -161,7 +161,7 @@ public class InstructorView {
 					}	
 				});
 			
-			} else {	
+			} else { // If user searches and gets no matches,
 				outputField.appendText("No instructor matches found.");
 				clearTextFields();
 			}

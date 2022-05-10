@@ -140,11 +140,11 @@ public class TextbookView {
 					return false;
 			});
 			
-			if(userChoice.equals("ISBN") && predicateSearch.length > 0) {
+			if(userChoice.equals("ISBN") && predicateSearch.length > 0) { // If users searches by Isbn and gets a match,
 				outputField.appendText("Textbook found with id " + isbnField.getText() + "!");
 				setTextFields(predicateSearch[0]);
 				
-			} else if(predicateSearch.length > 0) {
+			} else if(predicateSearch.length > 0) { // If user searches by anything else and gets a match,
 				outputField.appendText("Search results:");
 				ObservableList<Textbook> results = FXCollections.observableArrayList(predicateSearch);
 				listView.getItems().addAll(results);
@@ -158,7 +158,7 @@ public class TextbookView {
 					}	
 				});
 			
-			} else {
+			} else { // If user searches and gets no matches, 
 				outputField.appendText("No textbook matches found.");
 				clearTextFields();
 			}

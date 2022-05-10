@@ -43,11 +43,9 @@
     <fullyQualifiedTypeName name="javafx.scene.paint.Color"/>
     <fullyQualifiedTypeName name="javafx.scene.layout.Background"/>
     <fullyQualifiedTypeName name="util.Utilities"/>
-    <fullyQualifiedTypeName name="util.Restore"/>
     <fullyQualifiedTypeName name="javafx.scene.control.Button"/>
     <fullyQualifiedTypeName name="javafx.scene.layout.HBox"/>
     <fullyQualifiedTypeName name="javafx.scene.layout.VBox"/>
-    <fullyQualifiedTypeName name="javafx.geometry.Pos"/>
     <fullyQualifiedTypeName name="javafx.scene.image.Image"/>
     <fullyQualifiedTypeName name="javafx.scene.control.Alert.AlertType"/>
     <fullyQualifiedTypeName name="javafx.scene.control.Alert"/>
@@ -58,6 +56,8 @@
     <fullyQualifiedTypeName name="javafx.scene.control.TextInputDialog"/>
     <fullyQualifiedTypeName name="view.MainView"/>
     <fullyQualifiedTypeName name="javafx.stage.FileChooser"/>
-    <fullyQualifiedTypeName name="java.io.File"/>
     <fullyQualifiedTypeName name="javafx.stage.FileChooser.ExtensionFilter"/>
+    <fullyQualifiedTypeName name="util.Restore"/>
+    <fullyQualifiedTypeName name="java.io.File"/>
+    <fullyQualifiedTypeName name="javafx.geometry.Pos"/>
 </qualifiedTypeNameHistroy>

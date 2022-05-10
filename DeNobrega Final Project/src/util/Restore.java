@@ -1,5 +1,6 @@
 package util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -8,9 +9,9 @@ import model.PersonBag;
 import model.TextbookBag;
 
 public class Restore {
-	public static PersonBag restorePersonBag() {
+	public static PersonBag restorePersonBag(File selectedPersonsFile) {
 		try {
-			FileInputStream fis = new FileInputStream("backupFolder/Persons.dat");
+			FileInputStream fis = new FileInputStream(selectedPersonsFile);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			PersonBag personBag = (PersonBag) ois.readObject();
 			Person.setIdCount(personBag.getnElems());
@@ -22,9 +23,9 @@ public class Restore {
 		return null;
 	}
 	
-	public static TextbookBag restoreTextbookBag() {
+	public static TextbookBag restoreTextbookBag(File selectedTextbooksFile) {
 		try {
-			FileInputStream fis = new FileInputStream("backupFolder/Textbooks.dat");
+			FileInputStream fis = new FileInputStream(selectedTextbooksFile);
 			ObjectInputStream ois = new ObjectInputStream(fis);
 			TextbookBag textbookBag = (TextbookBag) ois.readObject();
 			ois.close();

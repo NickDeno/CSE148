@@ -1,5 +1,6 @@
 package util;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -7,9 +8,9 @@ import model.PersonBag;
 import model.TextbookBag;
 
 public class Backup {
-	public static void backupPersonBag(PersonBag personBag) {
+	public static void backupPersonBag(PersonBag personBag, File selectedPersonsFile) {
 		try {
-			FileOutputStream fos = new FileOutputStream("backupFolder/Persons.dat");
+			FileOutputStream fos = new FileOutputStream(selectedPersonsFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(personBag);
 			oos.close();
@@ -18,9 +19,9 @@ public class Backup {
 		}
 	}
 	
-	public static void backupTextbookBag(TextbookBag textbookBag) {
+	public static void backupTextbookBag(TextbookBag textbookBag, File selectedTextbooksFile) {
 		try {
-			FileOutputStream fos = new FileOutputStream("backupFolder/Textbooks.dat");
+			FileOutputStream fos = new FileOutputStream(selectedTextbooksFile);
 			ObjectOutputStream oos = new ObjectOutputStream(fos);
 			oos.writeObject(textbookBag);
 			oos.close();

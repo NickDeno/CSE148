@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -29,8 +30,9 @@ import util.Backup;
 
 public class InstructorView {
 	private PersonBag personBag;
-	private VBox instructorPane;
+	private File selectedFile;
 	
+	private VBox instructorPane;
 	private TextField firstNameField;
 	private TextField lastNameField;
 	private TextField rankField;
@@ -43,9 +45,9 @@ public class InstructorView {
 	
 	private static final String[] validRanks = {"Instructor", "Assistant Professor", "Associate Professor", "Professor"};
 	
-	public InstructorView(PersonBag personBag) {
+	public InstructorView(PersonBag personBag, File selectedFile) {
 		this.personBag = personBag;
-		
+		this.selectedFile = selectedFile;
 		Text title = new Text("Instructor View");
 		title.setFill(Paint.valueOf("#ffffff"));
 		title.setFont(Font.font("Baskerville Old Face",FontWeight.BOLD, 60));
@@ -116,7 +118,7 @@ public class InstructorView {
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
-			Person[] predicateSearch = personBag.search(i -> {
+			Person[] predicateSearch = this.personBag.search(i -> {
 				if(i instanceof Instructor) {
 					if(choiceBox.getValue().equals("ID")) {
 						return i.getId().equals(idField.getText());
@@ -176,11 +178,11 @@ public class InstructorView {
 			
 				if(action.get() == ButtonType.OK) {
 					outputField.appendText("Removed instructor with id " + idField.getText() + "!");
-					Person[] predicateDelete = personBag.delete(i -> i.getId().equals(idField.getText()));		
+					Person[] predicateDelete = this.personBag.delete(i -> i.getId().equals(idField.getText()));		
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupPersonBag(personBag);
+					Backup.backupPersonBag(personBag, this.selectedFile);
 				}
 			}
 		});
@@ -190,10 +192,10 @@ public class InstructorView {
 			listView.getItems().clear();
 			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
 				Instructor i = new Instructor(new Name(firstNameField.getText(), lastNameField.getText()), rankField.getText(), Double.parseDouble(salaryField.getText()));
-				personBag.insert(i);
+				this.personBag.insert(i);
 				outputField.appendText("Inserted Instructor!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag);	
+				Backup.backupPersonBag(personBag, this.selectedFile);	
 			} 
 		});
 		
@@ -207,7 +209,7 @@ public class InstructorView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Instructor with id " + idField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag);
+				Backup.backupPersonBag(personBag, this.selectedFile);
 			}	
 		});
 		
@@ -221,6 +223,14 @@ public class InstructorView {
 	
 	public VBox getInstructorPane() {
 		return instructorPane;
+	}
+	
+	public void setPersonBag(PersonBag personBag) {
+		this.personBag = personBag;
+	}
+	
+	public void setSelectedFile(File selectedFile) {
+		this.selectedFile = selectedFile;
 	}
 	
 	private boolean checkTextFieldsAreValid() {

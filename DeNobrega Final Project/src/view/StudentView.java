@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -29,8 +30,9 @@ import util.Backup;
 
 public class StudentView {
 	private PersonBag personBag;
-	private VBox studentPane;
+	private File selectedFile;
 	
+	private VBox studentPane;
 	private TextField firstNameField;
 	private TextField lastNameField;
 	private TextField gpaField;
@@ -46,8 +48,9 @@ public class StudentView {
 			"HSC", "MED", "HIT", "HUS", "NUR", "OTA", "PED", "PTA", "PNU", "AST", "BIO", "CHE", "ESC", "ENV", "MAR", "MAT", "MET", "PHY", "ANT", "ECO", "GEO", "POL", "PSY",
 			"COL", "CSE", "CRJ", "CUL", "EDU", "ESL", "HVA", "HRM", "CST", "IND", "LAW", "LIB", "MFT", "POA", "RTV", "RDG", "VST"};
 
-	public StudentView(PersonBag personBag) {
+	public StudentView(PersonBag personBag, File selectedFile) {
 		this.personBag = personBag;
+		this.selectedFile = selectedFile;
 		Text title = new Text("Student View");
 		title.setFill(Paint.valueOf("#ffffff"));
 		title.setFont(Font.font("Baskerville Old Face",FontWeight.BOLD, 60));
@@ -118,7 +121,7 @@ public class StudentView {
 		searchBtn.setOnAction(e -> {		
 			outputField.clear();
 			listView.getItems().clear();
-			Person[] predicateSearch = personBag.search(s -> {
+			Person[] predicateSearch = this.personBag.search(s -> {
 				if(s instanceof Student) {
 					if(choiceBox.getValue().equals("ID")) {
 						return s.getId().equals(idField.getText());
@@ -177,11 +180,11 @@ public class StudentView {
 				
 				if(action.get() == ButtonType.OK) {
 					outputField.appendText("Removed student with id " + idField.getText() + "!");
-					Person[] predicateDelete = personBag.delete(s -> s.getId().equals(idField.getText()));		
+					Person[] predicateDelete = this.personBag.delete(s -> s.getId().equals(idField.getText()));		
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupPersonBag(personBag);
+					Backup.backupPersonBag(personBag, this.selectedFile);
 				}	
 			}
 		});
@@ -191,16 +194,16 @@ public class StudentView {
 			listView.getItems().clear();	
 			if(checkTextFieldsAreValid() == true && idField.getText().isEmpty()) {
 				Student s = new Student(new Name(firstNameField.getText(), lastNameField.getText()),  Double.parseDouble(gpaField.getText()), majorField.getText());
-				personBag.insert(s);
+				this.personBag.insert(s);
 				outputField.appendText("Inserted Student!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag);	
+				Backup.backupPersonBag(personBag, this.selectedFile);	
 			} 	
 		});
 		
 		updateBtn.setOnAction(e -> {
 			outputField.clear();
-			Person[] studentToUpdate = personBag.search(s -> s.getId().equals(idField.getText()));	
+			Person[] studentToUpdate = this.personBag.search(s -> s.getId().equals(idField.getText()));	
 			if(checkTextFieldsAreValid() == true) {
 				studentToUpdate[0].setName(new Name(firstNameField.getText(), lastNameField.getText()));
 				((Student)studentToUpdate[0]).setMajor(majorField.getText());
@@ -208,7 +211,7 @@ public class StudentView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Student with id " + idField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag);
+				Backup.backupPersonBag(personBag, this.selectedFile);
 			}
 		});
 		
@@ -224,6 +227,14 @@ public class StudentView {
 		return studentPane;
 	}
 	
+	public void setBag(PersonBag personBag) {
+		this.personBag = personBag;
+	}
+	
+	public void setSelectedFile(File selectedFile) {
+		this.selectedFile = selectedFile;
+	}
+
 	private boolean checkTextFieldsAreValid() {
 		if(firstNameField.getText().isEmpty() || lastNameField.getText().isEmpty() || gpaField.getText().isEmpty() || majorField.getText().isEmpty()) {
 			Alert alert = new Alert(AlertType.ERROR);

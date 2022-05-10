@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
@@ -18,9 +19,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import model.PersonBag;
 import model.TextbookBag;
 import util.Backup;
+import util.Restore;
 import util.Utilities;
 
 public class MainView {
@@ -31,13 +35,18 @@ public class MainView {
 	private TextbookView textbookView;
 	private BorderPane root;
 	
-	public MainView(PersonBag personBag, TextbookBag textbookBag) {
-		this.personBag = personBag;
-		this.textbookBag = textbookBag;
-		studentView = new StudentView(this.personBag);
-		instructorView = new InstructorView(this.personBag);
-		textbookView = new TextbookView(this.textbookBag);
+	private FileChooser fileChooser = new FileChooser();
+	private File selectedPersonsFile;
+	private File selectedTextbooksFile;
+	
+	public MainView() {
+		fileChooser.setTitle("Open Resource File");
+		fileChooser.setInitialDirectory(new File("BackupFolder/"));
+		fileChooser.getExtensionFilters().addAll(new ExtensionFilter(".dat", "*.dat"));
 		
+		studentView = new StudentView(personBag, selectedPersonsFile);
+		instructorView = new InstructorView(personBag, selectedPersonsFile);
+		textbookView = new TextbookView(textbookBag, selectedTextbooksFile);
 		root = new BorderPane();		
 		MenuBar menuBar = new MenuBar();	
 		VBox startView = makeStartingView();	
@@ -45,12 +54,16 @@ public class MainView {
 		root.setCenter(startView);
 			
 		Menu fileMenu = new Menu("File");
-		Menu importMenu = new Menu("Import (FIRST LAUNCH ONLY)");
+		Menu importMenu = new Menu("Import");
+		Menu importPersonsMenu = new Menu("Persons");
+		Menu importTextbooksMenu = new Menu("Textbooks");
 		Menu backupMenu = new Menu("Backup");
 		Menu viewMenu = new Menu("View");
 		Menu clearMenu = new Menu("Clear");	
-		MenuItem importPersonsItem = new MenuItem("Import Students/Instructors");
-		MenuItem importTextbooksItem = new MenuItem("Import Textbooks");
+		MenuItem importExistingPersonsItem = new MenuItem("Import Exisiting PersonBag");
+		MenuItem importNewPersonsItem = new MenuItem("Import New PersonBag");
+		MenuItem importExisitingTextbooksItem = new MenuItem("Import Exisiting TextbookBag");
+		MenuItem importNewTextbooksItem = new MenuItem("Import New TextbookBag");
 		MenuItem backupPersonsItem = new MenuItem("Backup Students/Instructors");
 		MenuItem backupTextbooksItem = new MenuItem("Backup Textbooks");
 		MenuItem exitItem = new MenuItem("Exit");		
@@ -63,95 +76,172 @@ public class MainView {
 		SeparatorMenuItem separator = new SeparatorMenuItem();
 		SeparatorMenuItem separator2 = new SeparatorMenuItem();
 		
-		importMenu.getItems().addAll(importPersonsItem, importTextbooksItem);
-		backupMenu.getItems().addAll(backupPersonsItem, backupTextbooksItem);
 		fileMenu.getItems().addAll(importMenu, backupMenu, separator, exitItem);
+		importMenu.getItems().addAll(importPersonsMenu, importTextbooksMenu);
+		importPersonsMenu.getItems().addAll(importExistingPersonsItem, importNewPersonsItem);
+		importTextbooksMenu.getItems().addAll(importExisitingTextbooksItem, importNewTextbooksItem);
+		backupMenu.getItems().addAll(backupPersonsItem, backupTextbooksItem);
 		viewMenu.getItems().addAll(studentViewItem, instructorViewItem, textbookViewItem, separator2, mainMenuViewItem);
 		clearMenu.getItems().addAll(clearTextFieldsItem, clearAllFieldsItem);
 		menuBar.getMenus().addAll(fileMenu, viewMenu, clearMenu);
 		
-		importPersonsItem.setOnAction(e -> {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
+		importExistingPersonsItem.setOnAction(e -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Importing Exisiting File");
 			alert.setHeaderText(null);
-			alert.setContentText("Importing students and instructors should only be done on first launch. Do you want to continue?");
-			Optional<ButtonType> action = alert.showAndWait();
-			if(action.get() == ButtonType.OK) {
-				Utilities.importStudents(this.personBag);
-				Utilities.importInstructors(this.personBag);
-				Backup.backupPersonBag(this.personBag);
-				Alert successAlert = new Alert(AlertType.INFORMATION);
-				successAlert.setTitle("Import Successful");
-				successAlert.setHeaderText(null);
-				successAlert.setContentText("Students and instructors have been imported!");
-				successAlert.showAndWait();
+			alert.setContentText("To import an exisiting PersonBag, please select an existing .dat file that contains students/instructors.");
+			alert.showAndWait();
+			selectedPersonsFile = fileChooser.showOpenDialog(null);
+			
+			personBag = Restore.restorePersonBag(selectedPersonsFile);
+			studentView.setBag(personBag);
+			studentView.setSelectedFile(selectedPersonsFile);
+			Backup.backupPersonBag(personBag, selectedPersonsFile);
+			
+			alert.setTitle("Import Sucessful");
+			alert.setContentText("The selected PersonBag file was sucessfully imported!");
+			alert.showAndWait();
+		});
 	
-			}
-		});
-		
-		importTextbooksItem.setOnAction(e -> {
-			Alert alert = new Alert(AlertType.CONFIRMATION);
+		importNewPersonsItem.setOnAction(e -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Creating New File");
 			alert.setHeaderText(null);
-			alert.setContentText("Importing Textbooks should only be done on first launch. Do you want to continue?");
-			Optional<ButtonType> action = alert.showAndWait();
-			if(action.get() == ButtonType.OK) {
-				Utilities.importTextbooks(this.textbookBag);
-				Backup.backupTextbookBag(this.textbookBag);
-				Alert successAlert = new Alert(AlertType.INFORMATION);
-				successAlert.setTitle("Import Successful");
-				successAlert.setHeaderText(null);
-				successAlert.setContentText("Textbooks have been imported!");
-				successAlert.showAndWait();
-			}
+			alert.setContentText("To import a new PersonBag, please choose a location and create a new .dat file. "
+					+ "This file will then be loaded with 1000 random students and 500 random instructors.");
+			alert.showAndWait();
+			selectedPersonsFile = fileChooser.showSaveDialog(null);
+			
+			personBag = new PersonBag(2000);
+			Utilities.importStudents(personBag);
+			Utilities.importInstructors(personBag);
+			Backup.backupPersonBag(personBag, selectedPersonsFile);
+			studentView.setBag(personBag);
+			studentView.setSelectedFile(selectedPersonsFile);
+			instructorView.setPersonBag(personBag);
+			instructorView.setSelectedFile(selectedPersonsFile);
+			
+			alert.setTitle("New PersonBag Created");
+			alert.setContentText("A new PersonBag file was successfuly created with 1000 random students and 500 random instructors at " + selectedPersonsFile );
+			alert.setWidth(500);
+			alert.setHeight(175);
+			alert.showAndWait();
 		});
-		
+	
+		importExisitingTextbooksItem.setOnAction(e -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Importing Exisiting File");
+			alert.setHeaderText(null);
+			alert.setContentText("To import an exisiting TextbookBag, please select an existing .dat file that contains textbooks.");
+			alert.showAndWait();
+			selectedTextbooksFile = fileChooser.showOpenDialog(null);
+			
+			textbookBag = Restore.restoreTextbookBag(selectedTextbooksFile);
+			textbookView.setTextbookBag(textbookBag);
+			textbookView.setSelectedFile(selectedPersonsFile);
+			Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+			
+			alert.setTitle("Import Sucessful");
+			alert.setContentText("The selected TextbookBag file was sucessfully imported!");
+			alert.showAndWait();
+		});
+	
+		importNewTextbooksItem.setOnAction(e -> {
+			Alert alert = new Alert(AlertType.INFORMATION);
+			alert.setTitle("Creating New File");
+			alert.setHeaderText(null);
+			alert.setContentText("To import a new TextbookBag, please choose a location and create a new .dat file.");
+			alert.showAndWait();
+			selectedTextbooksFile = fileChooser.showSaveDialog(null);
+			
+			textbookBag = new TextbookBag(40000);
+			Utilities.importTextbooks(textbookBag);
+			Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+			textbookView.setTextbookBag(textbookBag);
+			textbookView.setSelectedFile(selectedTextbooksFile);
+			
+			alert.setTitle("New TextbookBag Created");
+			alert.setWidth(500);
+			alert.setHeight(175);
+			alert.setContentText("A new TextbookBag file was successfuly created at " + selectedTextbooksFile);
+			alert.showAndWait();
+		});
+	
 		backupPersonsItem.setOnAction(e -> {
-			Backup.backupPersonBag(this.personBag);
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Backup Successful");
-			alert.setHeaderText(null);
-			alert.setContentText("Students and Instructors have been backed up!");
-			alert.showAndWait();
+			//This if-else statement is done to prevent a NullPointerException when trying to backup.
+			if(selectedPersonsFile != null) {
+				Backup.backupPersonBag(personBag, selectedPersonsFile);	
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Backup Successful");
+				alert.setHeaderText(null);
+				alert.setContentText("PersonBag has been backed up to " + selectedPersonsFile);
+				alert.showAndWait();
+			} else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setHeaderText(null);
+				alert.setContentText("Cannot backup students and instructors since no PersonBag file was ever imported.");
+				alert.showAndWait();
+			}
 		});	
-		
+	
 		backupTextbooksItem.setOnAction(e -> {
-			Backup.backupTextbookBag(this.textbookBag);
-			Alert alert = new Alert(AlertType.INFORMATION);
-			alert.setTitle("Backup Successful");
-			alert.setHeaderText(null);
-			alert.setContentText("Textbooks have been backed up!");
-			alert.showAndWait();
+			//This if-else statement is done to prevent a NullPointerException when trying to backup.
+			if(selectedTextbooksFile != null) {
+				Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+				Alert alert = new Alert(AlertType.INFORMATION);
+				alert.setTitle("Backup Successful");
+				alert.setHeaderText(null);
+				alert.setContentText("Textbooks have been backed up to " + selectedTextbooksFile);
+				alert.showAndWait();
+			} else {
+				Alert alert = new Alert(AlertType.ERROR);
+				alert.setHeaderText(null);
+				alert.setContentText("Cannot backup textbooks since no TextbookBag file was ever imported.");
+				alert.showAndWait();
+			}
 		});
-		
+	
 		exitItem.setOnAction(e -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setHeaderText(null);
-			alert.setContentText("Are you sure you want to exit? Students, Instructors, and Textbooks will be backed up on exit.");
+			alert.setContentText("Are you sure you want to exit? The imported files will be backed up on exit.");
 			Optional<ButtonType> action = alert.showAndWait();
 			if(action.get() == ButtonType.OK) {
-				Backup.backupPersonBag(this.personBag);
-				Backup.backupTextbookBag(this.textbookBag);
-				Platform.exit();
+				//This if-else statement is done to prevent a NullPointerException when trying to backup.
+				if(selectedPersonsFile != null && selectedTextbooksFile!= null) {
+					Backup.backupPersonBag(personBag, selectedPersonsFile);
+					Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+					Platform.exit();
+				} else if(selectedPersonsFile != null) {
+					Backup.backupPersonBag(personBag, selectedPersonsFile);
+					Platform.exit();
+				} else if(selectedTextbooksFile != null) {
+					Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
+					Platform.exit();
+				} else {
+					Platform.exit();
+				}
 			}
 		});
-		
+	
 		studentViewItem.setOnAction(e -> {
 			root.setCenter(studentView.getStudentPane());
 			instructorView.clearAllFields();
 			textbookView.clearAllFields();
 		});
-		
+	
 		instructorViewItem.setOnAction(e -> {
 			root.setCenter(instructorView.getInstructorPane());
 			studentView.clearAllFields();
 			textbookView.clearAllFields();
 		});
-		
+	
 		textbookViewItem.setOnAction(e -> {
 			root.setCenter(textbookView.getTextbookPane());
 			studentView.clearAllFields();
 			instructorView.clearAllFields();
 		});	
-		
+	
 		mainMenuViewItem.setOnAction(e -> {
 			Alert alert = new Alert(AlertType.CONFIRMATION);
 			alert.setHeaderText(null);
@@ -174,7 +264,7 @@ public class MainView {
 				textbookView.clearTextFields();
 			}
 		});
-		
+	
 		clearAllFieldsItem.setOnAction(e -> {
 			if(root.getCenter().equals(studentView.getStudentPane())) {
 				studentView.clearAllFields();	
@@ -194,31 +284,31 @@ public class MainView {
 		Text title = new Text("Main Menu");
 		title.setFill(Paint.valueOf("#ffffff"));
 		title.setFont(Font.font("Baskerville Old Face",FontWeight.BOLD, 100));
-		
+	
 		Button studentViewBtn = new Button("Student View");
 		studentViewBtn.setPrefSize(140, 50);
 		studentViewBtn.setFont(new Font("Bookman Old Style", 14));
 		studentViewBtn.setOnAction(e -> root.setCenter(studentView.getStudentPane()));
-		
+	
 		Button instructorViewBtn = new Button("Instructor View");
 		instructorViewBtn.setPrefSize(140, 50);
 		instructorViewBtn.setFont(new Font("Bookman Old Style", 14));
 		instructorViewBtn.setOnAction(e -> root.setCenter(instructorView.getInstructorPane()));
-		
+	
 		Button textbookViewBtn = new Button("Textbook View");
 		textbookViewBtn.setPrefSize(140, 50);
 		textbookViewBtn.setFont(new Font("Bookman Old Style", 14));
 		textbookViewBtn.setOnAction(e -> root.setCenter(textbookView.getTextbookPane()));
-		
+	
 		HBox buttonBox = new HBox(40);
 		buttonBox.getChildren().addAll(studentViewBtn, instructorViewBtn, textbookViewBtn);
 		buttonBox.setAlignment(Pos.CENTER);
-		
+	
 		VBox startView = new VBox(50);
 		startView.getChildren().addAll(title, buttonBox);
 		startView.setAlignment(Pos.CENTER);
 		startView.setStyle("-fx-background-color: linear-gradient(from 25% 25% to 100% 100%, #9e374a, #232526 )");
-		
+	
 		return startView;
 	}	
 }

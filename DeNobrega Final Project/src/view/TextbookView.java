@@ -1,5 +1,6 @@
 package view;
 
+import java.io.File;
 import java.util.Optional;
 
 import javafx.beans.value.ChangeListener;
@@ -22,14 +23,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import model.Name;
+import model.PersonBag;
 import model.Textbook;
 import model.TextbookBag;
 import util.Backup;
 
 public class TextbookView {
 	private TextbookBag textbookBag;
-	private VBox textbookPane;
+	private File selectedFile;
 	
+	private VBox textbookPane;
 	private TextField titleField;
 	private TextField isbnField;
 	private TextField authorFirstNameField;
@@ -40,9 +43,9 @@ public class TextbookView {
 	private ChoiceBox<String> choiceBox;
 	private ListView<Textbook> listView;
 	
-	public TextbookView(TextbookBag textbookBag) {
+	public TextbookView(TextbookBag textbookBag, File selectedFile) {
 		this.textbookBag = textbookBag;
-		
+		this.selectedFile = selectedFile;
 		Text title = new Text("Textbook View");
 		title.setFill(Paint.valueOf("#e1e8eb"));
 		title.setFont(Font.font("Baskerville Old Face",FontWeight.BOLD, 60));
@@ -176,7 +179,7 @@ public class TextbookView {
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupTextbookBag(textbookBag);
+					Backup.backupTextbookBag(textbookBag, this.selectedFile);
 				}
 			}
 		});
@@ -189,7 +192,7 @@ public class TextbookView {
 				textbookBag.insert(t);
 				outputField.appendText("Inserted Textbook");
 				clearTextFields();
-				Backup.backupTextbookBag(textbookBag);	
+				Backup.backupTextbookBag(textbookBag, this.selectedFile);	
 			} 
 		});
 		
@@ -204,7 +207,7 @@ public class TextbookView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Textbook with isbn " + isbnField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupTextbookBag(textbookBag);
+				Backup.backupTextbookBag(textbookBag, this.selectedFile);
 			}
 		});
 			
@@ -218,6 +221,14 @@ public class TextbookView {
 	
 	public VBox getTextbookPane() {
 		return textbookPane;
+	}
+	
+	public void setTextbookBag(TextbookBag textbookBag) {
+		this.textbookBag = textbookBag;
+	}
+	
+	public void setSelectedFile(File selectedFile) {
+		this.selectedFile = selectedFile;
 	}
 	
 	private boolean checkTextFieldsAreValid() {

@@ -35,11 +35,11 @@ public class MainView {
 	private TextbookView textbookView;
 	private BorderPane root;
 	
-	private FileChooser fileChooser = new FileChooser();
 	private File selectedPersonsFile;
 	private File selectedTextbooksFile;
 	
 	public MainView() {
+		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open Resource File");
 		fileChooser.setInitialDirectory(new File("BackupFolder/"));
 		fileChooser.getExtensionFilters().addAll(new ExtensionFilter(".dat", "*.dat"));

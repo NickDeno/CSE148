@@ -184,7 +184,7 @@ public class StudentView {
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupPersonBag(personBag, this.selectedFile);
+					Backup.backupPersonBag(this.personBag, this.selectedFile);
 				}	
 			}
 		});
@@ -197,7 +197,7 @@ public class StudentView {
 				this.personBag.insert(s);
 				outputField.appendText("Inserted Student!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag, this.selectedFile);	
+				Backup.backupPersonBag(this.personBag, this.selectedFile);	
 			} 	
 		});
 		
@@ -211,7 +211,7 @@ public class StudentView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Student with id " + idField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag, this.selectedFile);
+				Backup.backupPersonBag(this.personBag, this.selectedFile);
 			}
 		});
 		

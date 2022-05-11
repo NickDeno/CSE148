@@ -182,7 +182,7 @@ public class InstructorView {
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupPersonBag(personBag, this.selectedFile);
+					Backup.backupPersonBag(this.personBag, this.selectedFile);
 				}
 			}
 		});
@@ -195,7 +195,7 @@ public class InstructorView {
 				this.personBag.insert(i);
 				outputField.appendText("Inserted Instructor!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag, this.selectedFile);	
+				Backup.backupPersonBag(this.personBag, this.selectedFile);	
 			} 
 		});
 		
@@ -209,7 +209,7 @@ public class InstructorView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Instructor with id " + idField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupPersonBag(personBag, this.selectedFile);
+				Backup.backupPersonBag(this.personBag, this.selectedFile);
 			}	
 		});
 		

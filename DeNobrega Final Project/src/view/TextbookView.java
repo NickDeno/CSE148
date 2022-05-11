@@ -117,7 +117,7 @@ public class TextbookView {
 		searchBtn.setOnAction(e -> {
 			outputField.clear();
 			String userChoice = choiceBox.getValue();
-			Textbook[] predicateSearch = textbookBag.search(t -> {
+			Textbook[] predicateSearch = this.textbookBag.search(t -> {
 					if(userChoice.equals("TITLE")) {
 						return t.getTitle().equals(titleField.getText());
 					}
@@ -175,11 +175,11 @@ public class TextbookView {
 			
 				if(action.get() == ButtonType.OK) {
 					outputField.appendText("Removed textbook with isbn " + isbnField.getText() + "!");
-					Textbook[] predicateDelete = textbookBag.delete(t -> t.getIsbn().equals(isbnField.getText()));		
+					Textbook[] predicateDelete = this.textbookBag.delete(t -> t.getIsbn().equals(isbnField.getText()));		
 					listView.getItems().remove(predicateDelete[0]);
 					listView.getSelectionModel().clearSelection();
 					clearTextFields();
-					Backup.backupTextbookBag(textbookBag, this.selectedFile);
+					Backup.backupTextbookBag(this.textbookBag, this.selectedFile);
 				}
 			}
 		});
@@ -192,13 +192,13 @@ public class TextbookView {
 				textbookBag.insert(t);
 				outputField.appendText("Inserted Textbook");
 				clearTextFields();
-				Backup.backupTextbookBag(textbookBag, this.selectedFile);	
+				Backup.backupTextbookBag(this.textbookBag, this.selectedFile);	
 			} 
 		});
 		
 		updateBtn.setOnAction(e -> {
 			outputField.clear();
-			Textbook[] textbookToUpdate = textbookBag.search(t -> t.getIsbn().equals(isbnField.getText()));
+			Textbook[] textbookToUpdate = this.textbookBag.search(t -> t.getIsbn().equals(isbnField.getText()));
 			if(checkTextFieldsAreValid() == true) {
 				textbookToUpdate[0].setTitle(titleField.getText());
 				textbookToUpdate[0].setIsbn(isbnField.getText());
@@ -207,7 +207,7 @@ public class TextbookView {
 				listView.getSelectionModel().clearSelection();
 				outputField.appendText("Textbook with isbn " + isbnField.getText() + " was updated!");
 				clearTextFields();
-				Backup.backupTextbookBag(textbookBag, this.selectedFile);
+				Backup.backupTextbookBag(this.textbookBag, this.selectedFile);
 			}
 		});
 			

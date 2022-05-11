@@ -64,7 +64,7 @@ public class MainView {
 		MenuItem importNewPersonsItem = new MenuItem("Import New PersonBag");
 		MenuItem importExisitingTextbooksItem = new MenuItem("Import Exisiting TextbookBag");
 		MenuItem importNewTextbooksItem = new MenuItem("Import New TextbookBag");
-		MenuItem backupPersonsItem = new MenuItem("Backup Students/Instructors");
+		MenuItem backupPersonsItem = new MenuItem("Backup Persons");
 		MenuItem backupTextbooksItem = new MenuItem("Backup Textbooks");
 		MenuItem exitItem = new MenuItem("Exit");		
 		MenuItem studentViewItem = new MenuItem("Student View");
@@ -140,7 +140,7 @@ public class MainView {
 			if(selectedTextbooksFile != null) {
 				textbookBag = Restore.restoreTextbookBag(selectedTextbooksFile);
 				textbookView.setTextbookBag(textbookBag);
-				textbookView.setSelectedFile(selectedPersonsFile);
+				textbookView.setSelectedFile(selectedTextbooksFile);
 				Backup.backupTextbookBag(textbookBag, selectedTextbooksFile);
 				
 				alert.setTitle("Import Sucessful");

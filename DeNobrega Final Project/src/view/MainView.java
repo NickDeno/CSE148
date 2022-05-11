@@ -96,6 +96,8 @@ public class MainView {
 				personBag = Restore.restorePersonBag(selectedPersonsFile);
 				studentView.setBag(personBag);
 				studentView.setSelectedFile(selectedPersonsFile);
+				instructorView.setPersonBag(personBag);
+				instructorView.setSelectedFile(selectedPersonsFile);
 				Backup.backupPersonBag(personBag, selectedPersonsFile);
 				
 				alert.setTitle("Import Sucessful");

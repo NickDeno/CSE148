@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy element &apos;IncorrectRankException.java&apos; to &apos;DeNobrega Final Project/src/model&apos;&#x0D;&#x0A;- Original project: &apos;HW08&apos;&#x0D;&#x0A;- Destination element: &apos;DeNobrega Final Project/src/model&apos;&#x0D;&#x0A;- Original element: &apos;p7.IncorrectRankException.java&apos;" description="Copy compilation unit" destination="=DeNobrega Final Project/src&lt;model" element1="/src&lt;p7{IncorrectRankException.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1650742405005" units="1" version="1.0"/>
-</session>

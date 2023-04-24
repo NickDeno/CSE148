@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy element &apos;Animal.java&apos; to &apos;PM L08 Interfaces/src/p2&apos;&#x0D;&#x0A;- Original project: &apos;PM L08 Interfaces&apos;&#x0D;&#x0A;- Destination element: &apos;PM L08 Interfaces/src/p2&apos;&#x0D;&#x0A;- Original element: &apos;p1.Animal.java&apos;" description="Copy compilation unit" destination="/src&lt;p2" element1="/src&lt;p1{Animal.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1646260301305" units="1" version="1.0"/>
-</session>
